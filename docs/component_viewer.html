@@ -1,0 +1,322 @@
+<html>
+<head>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+
+<!--js files for ic_soa_svg sheets-->
+<script src="ic_soa_svg.js"></script>
+
+<!-- css files for ic_soa_svg -->
+<link rel="stylesheet" href="ic_soa_svg.css" type="text/css" charset="utf-8">
+
+<!-- js files for getting IC SOA data from sheet -->
+<script src="ic_soa_data.js" type="text/javascript"></script>
+
+<script>
+	var sheet_data = ic_soa_data_getSheetMetrics();
+	var spreadsheetId=ic_soa_data_getSheetID();
+	var dataObjects={};
+
+	
+	var QueryString = function () {
+	  // This function is anonymous, is executed immediately and 
+	  // the return value is assigned to QueryString!
+	  var query_string = {};
+	  var query = window.location.search.substring(1);
+	  var vars = query.split("&");
+	  for (var i=0;i<vars.length;i++) {
+		var pair = vars[i].split("=");
+			// If first entry with this name
+		if (typeof query_string[pair[0]] === "undefined") {
+		  query_string[pair[0]] = decodeURIComponent(pair[1]);
+			// If second entry with this name
+		} else if (typeof query_string[pair[0]] === "string") {
+		  var arr = [ query_string[pair[0]],decodeURIComponent(pair[1]) ];
+		  query_string[pair[0]] = arr;
+			// If third or later entry with this name
+		} else {
+		  query_string[pair[0]].push(decodeURIComponent(pair[1]));
+		}
+	  } 
+	  return query_string;
+	}();
+
+	function GetMenu() {
+		var ret = "";
+		ret += '<p><a href="index.html">Index</a> <a href="javascript:displayNOPARAM()">Menu</a></p>';
+		ret += '<div id="MAIN" style="display: none">';
+		ret += '<h1>Viewing MAIN</h1>';
+		ret += '</div>';
+		return ret;
+	};
+	
+	function LoadDoc() {
+		//Check Auth
+		board_checkAuth(LoadDoc2);
+	};
+	
+	function LoadDoc2() {
+		
+		//Load Data
+		ranges=[];
+		var sm = ic_soa_data_getSheetList();
+		for (i = 0; i < sm.length; i++) {
+			ranges.push(sheet_data[sm[i]].datarange);
+		}
+		board_getDataRangesFromSheet(spreadsheetId,ranges,function (result) {
+			dataObjects = ic_soa_data_getDataObject(sm,sheet_data,result,0);
+			//console.log(dataObjects);
+			if (QueryString.mode=="EDF") {
+				if (typeof(QueryString.name)=="undefined") {
+					displayNOPARAM();
+				} else {
+					var edfobj = ic_soa_data_getEDFFromName(QueryString.name, dataObjects);
+					if (typeof(edfobj)=="undefined") {
+					} else {
+						displayEDF(edfobj.uid);
+					};
+				};
+			} else if (QueryString.mode=="SYSTEM") {
+				displaySYSTEM("SYSTEM");
+			} else if (QueryString.mode=="INT") {
+				displayINT("INT");
+			} else {
+				displayNOPARAM();
+			};
+			
+		});
+		
+	
+	};
+	function getSYSTEMHtml(uid) {
+		var ret = "";
+		var system_object = dataObjects.SYSTEMs[uid];
+
+
+		var ints_to_draw = [];
+		for (cur_do = 0; cur_do < dataObjects.INTkeys.length; cur_do++) {
+			var cur_int = dataObjects.INTs[dataObjects.INTkeys[cur_do]];
+			if (cur_int.target_system==system_object.name) ints_to_draw.push(cur_int);
+		};
+		var edfs_to_draw = [];
+		for (cur_do = 0; cur_do < dataObjects.EDFkeys.length; cur_do++) {
+			var cur_edf = dataObjects.EDFs[dataObjects.EDFkeys[cur_do]];
+			if (cur_edf.source_system==system_object.name) edfs_to_draw.push(cur_edf);
+		};
+		
+		//console.log("Ints:" + ints_to_draw.length);
+		//console.log("EDFs:" + edfs_to_draw.length);
+
+		ret += "<h1>System: " + system_object.name + "</h1>";
+		
+		var max_eles = ints_to_draw.length;
+		if (max_eles < edfs_to_draw.length) max_eles = edfs_to_draw.length;
+		var svg_height = max_eles * 100;
+		if (svg_height<100) svg_height = 100;
+		
+		var system_pos = {x:600, y:(svg_height/2)}
+
+		ret += "<svg class=\"ic_soa_svg\" style=\"width: 1300; height: " + svg_height + ";\">";
+		ret += ic_soa_svg_getMarkers();
+		ret += ic_soa_svg_drawSystem(system_object.name,system_pos);
+		
+		//Draw INTS (on left)
+		var pos = {x:250, y:50};
+		for (cur_do = 0; cur_do < ints_to_draw.length; cur_do++) {
+			ret += ic_soa_svg_drawIntegration(
+						ints_to_draw[cur_do].name,
+						pos,
+						"javascript:displayINT('" + ints_to_draw[cur_do].uid + "')"
+			);
+			ret += ic_soa_svg_drawArrow(ic_soa_svg_Integration_conectorPointLocation(pos,"right"),ic_soa_svg_System_conectorPointLocation(system_pos,"left"));
+			pos.y = pos.y + 100;
+		}
+		
+		//Draw EDFS (on right)
+		var pos = {x:900, y:50};
+		for (cur_do = 0; cur_do < edfs_to_draw.length; cur_do++) {
+			ret += ic_soa_svg_drawEDF(
+						edfs_to_draw[cur_do].name,
+						pos,
+						"javascript:displayEDF('" + edfs_to_draw[cur_do].uid + "')"
+			);
+			ret += ic_soa_svg_drawArrow(ic_soa_svg_System_conectorPointLocation(system_pos,"right"),ic_soa_svg_EDF_conectorPointLocation(pos,"left"));
+			pos.y = pos.y + 100;
+		}
+		
+		ret += "</svg>";		
+		return ret;
+	};
+	function displaySYSTEM(uid) {
+		document.getElementById('MAIN').innerHTML = getSYSTEMHtml(uid);
+		document.getElementById('MAIN').style.display = 'inline';
+	};
+	
+	function getEDFHtml(uid) {
+	
+		var ret = "";
+		var curEDF = dataObjects.EDFs[uid];
+		if (typeof(curEDF)=="undefined") {
+			console.log("ERROR no EDF with uid " + uid);
+			return;
+		}
+
+		var confluence_doc_url = "https://wiki.imperial.ac.uk/display/TIR/" + curEDF.name;
+		
+		var ints_to_draw = [];
+		for (cur_do = 0; cur_do < dataObjects.INTkeys.length; cur_do++) {
+			var cur_int = dataObjects.INTs[dataObjects.INTkeys[cur_do]];
+			if (cur_int.source_edf==curEDF.name) ints_to_draw.push(cur_int);
+		};
+		//console.log(ints_to_draw);
+
+		var svg_height = ints_to_draw.length * 100;
+		if (svg_height<100) svg_height = 100;
+		var source_sys_pos = {x:80, y:(svg_height/2)};
+		var edf_pos = {x:350, y:(svg_height/2)};
+
+		var source_system_object = ic_soa_data_getSystemFromName(curEDF.source_system,dataObjects);
+		
+		ret += '<table border=0 width="100%" height="100%"><tr><td colspan=2>'
+		ret += GetMenu();
+		ret += "<h1>EDF: " + curEDF.name + " (" + curEDF.status + ")</h1>";
+		ret += "<svg class=\"ic_soa_svg\" style=\"width: 1300; height: " + svg_height + ";\">";
+		ret += ic_soa_svg_getMarkers();
+		ret += ic_soa_svg_drawSystem(curEDF.source_system,source_sys_pos,"javascript:displaySYSTEM('" + source_system_object.uid + "')");
+		ret += ic_soa_svg_drawEDF(curEDF.name,edf_pos);
+		ret += ic_soa_svg_drawArrow(ic_soa_svg_System_conectorPointLocation(source_sys_pos,"right"), ic_soa_svg_EDF_conectorPointLocation(edf_pos,"left"));
+
+		var int_pos = {x:800, y:50};
+		for (cur_do = 0; cur_do < ints_to_draw.length; cur_do++) {
+			var target_system_object = ic_soa_data_getSystemFromName(ints_to_draw[cur_do].target_system,dataObjects);
+			ret += ic_soa_svg_drawIntegrationWithTarget(
+						ints_to_draw[cur_do].name,
+						ints_to_draw[cur_do].target_system,
+						int_pos,
+						"javascript:displayINT('" + ints_to_draw[cur_do].uid + "')",
+						"javascript:displaySYSTEM('" + target_system_object.uid + "')"
+			);
+			ret += ic_soa_svg_drawArrow( ic_soa_svg_EDF_conectorPointLocation(edf_pos,"right"),ic_soa_svg_Integration_conectorPointLocation(int_pos,"left"));
+			int_pos.y = int_pos.y + 100;
+		}
+		
+		ret += '</svg>';
+		ret += '</tr></td>';
+		
+		var w = $( document ).width() - 400;
+		
+		ret += '<tr><td width="' + w + 'px" height="100%">';
+		ret += '<iframe src="' + confluence_doc_url + '" scrolling="yes" height="100%" width="' + w + 'px" >';
+		ret += '</iframe>';
+		ret += '</td><td valign="top" align="left">';
+		
+		ret += '<table border=1>';
+		ret += '<tr><th>EDF Name:</th><td>' + curEDF.name + '</td>';
+		ret += '<tr><th>Development Status:</th><td>' + curEDF.status + '</td>';
+		ret += '<tr><th>Source System:</th><td>' + curEDF.source_system + '</td>';
+		ret += '<tr><th>Confluence Documentation:</th><td><a href="' + confluence_doc_url + '">Confluence</a></td>';
+		ret += '<tr><th>Tags:</th><td>' + curEDF.tags + '</td>';
+		ret += '</table>';
+		
+		ret += "</td></tr></table>";
+
+		return ret;
+	};
+	function displayEDF(uid) {
+		document.getElementById('MAIN').innerHTML = getEDFHtml(uid);
+		document.getElementById('MAIN').style.display = 'inline';
+	};
+	function getINTHtml(uid) {
+		var ret = "";
+		var curINT = dataObjects.INTs[uid];
+
+		var edf_pos = {x:180, y:50};
+		var int_pos = {x:700, y:50};
+		
+		ret += GetMenu();
+		
+		ret += "<h1>Integration: " + curINT.name + " (" + curINT.status + ")</h1>";
+		ret += "<svg class=\"ic_soa_svg\" style=\"width: 1300; height: 100;\">";
+		ret += ic_soa_svg_getMarkers();
+		
+		var src_edf_obj = ic_soa_data_getEDFFromName(curINT.source_edf, dataObjects);
+		//console.log(src_edf_obj);
+		
+		ret += ic_soa_svg_drawEDF(curINT.source_edf,edf_pos,"javascript:displayEDF('" + src_edf_obj.uid + "')");
+
+		var target_system_object = ic_soa_data_getSystemFromName(curINT.target_system,dataObjects);
+		
+		ret += ic_soa_svg_drawIntegrationWithTarget(
+			curINT.name,
+			curINT.target_system,
+			int_pos,
+			undefined,
+			"javascript:displaySYSTEM('" + target_system_object.uid + "')"
+		);
+		ret += ic_soa_svg_drawArrow( ic_soa_svg_EDF_conectorPointLocation(edf_pos,"right"),ic_soa_svg_Integration_conectorPointLocation(int_pos,"left"));
+		
+		ret += "</svg>";
+		return ret;
+	};
+	function displayINT(uid) {
+		document.getElementById('MAIN').innerHTML = getINTHtml(uid);
+		document.getElementById('MAIN').style.display = 'inline';
+	};
+	function getNOPARAMHtml() {
+		var ret = "";
+		ret += GetMenu();
+		
+		ret += "<h1>Component Viewer</h1>";
+		ret += "<table><tr>";
+
+		ret += "<td valign=\"top\"><h2>Systems</h1>";
+		ret += "<ul>";
+		for (cur_do = 0; cur_do < dataObjects.SYSTEMkeys.length; cur_do++) {
+			var cur_sys = dataObjects.SYSTEMs[dataObjects.SYSTEMkeys[cur_do]];
+			ret += "<li><a href=\"javascript:displaySYSTEM('" + cur_sys.name + "');\">" + cur_sys.name + "</a></li>";
+		}
+		ret += "</ul></td>";
+
+		ret += "<td valign=\"top\"><h2>EDFs</h1>";
+		ret += "<ul>";
+		for (cur_do = 0; cur_do < dataObjects.EDFkeys.length; cur_do++) {
+			var cur_edf = dataObjects.EDFs[dataObjects.EDFkeys[cur_do]];
+			ret += "<li><a href=\"javascript:displayEDF('" + cur_edf.uid + "')\">" + cur_edf.name + "</a></li>";
+		}
+		ret += "</ul></td>";
+
+		ret += "<td valign=\"top\"><h2>Integrations</h1>";
+		ret += "<ul>";
+		for (cur_do = 0; cur_do < dataObjects.INTkeys.length; cur_do++) {
+			var cur_int = dataObjects.INTs[dataObjects.INTkeys[cur_do]];
+			ret += "<li><a href=\"javascript:displayINT('" + cur_int.uid + "')\">" + cur_int.name + "</a></li>";
+		}
+		ret += "</ul></td>";
+		ret += "</tr></table>";
+		return ret;
+	};
+	function displayNOPARAM() {
+		document.getElementById('MAIN').innerHTML = getNOPARAMHtml();
+		document.getElementById('MAIN').style.display = 'inline';
+	};
+
+	/*
+  function resizeIframe(obj) {
+    obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+	obj.style.width= screen.width;
+  }	*/
+	
+</script>
+
+<!--js files for google sheets-->
+<script src="board.js"></script>
+<script src="https://apis.google.com/js/client.js?onload=LoadDoc"></script>
+
+</head>
+<body>
+	<div id="MAIN" style="display: none">
+		<h1>Viewing MAIN</h1>
+	</div>
+</body>
+</html>

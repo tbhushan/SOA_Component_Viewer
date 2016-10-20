@@ -1,0 +1,44 @@
+svg.ic_soa_svg {
+	background-color: rgba(211, 211, 211, 0.15);
+    border-style: dashed;
+
+}
+
+svg.ic_soa_svg ellipse.system, svg.ic_soa_svg line.system {
+	fill: lightgrey;
+	stroke-width: 3;
+	stroke: black;
+}
+svg.ic_soa_svg rect.system {
+	fill: lightgrey;
+	stroke: none;
+}
+
+svg.ic_soa_svg text {
+	text-anchor: middle;
+	alignment-baseline: middle;
+}
+
+svg.ic_soa_svg ellipse.edf {
+	fill: red;
+	stroke-width: 1;
+	stroke: black;
+}
+
+svg.ic_soa_svg polygon.int {
+	fill: lightgreen;
+	stroke-width: 1;
+	stroke: black;
+}
+
+svg.ic_soa_svg line.arrow {
+	stroke-width: 3;
+	stroke: black;
+	marker-end: url(#triangle);
+}
+
+svg.ic_soa_svg text.link {
+	text-decoration: underline;
+	fill: blue;
+	cursor: pointer;
+}
