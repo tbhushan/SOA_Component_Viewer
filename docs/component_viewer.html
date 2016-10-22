@@ -92,6 +92,7 @@
 	function getSYSTEMHtml(uid) {
 		var ret = "";
 		var system_object = dataObjects.SYSTEMs[uid];
+		ret += GetMenu();
 
 
 		var ints_to_draw = [];
@@ -263,6 +264,20 @@
 		document.getElementById('MAIN').innerHTML = getINTHtml(uid);
 		document.getElementById('MAIN').style.display = 'inline';
 	};
+	function getPRESHtml(uid) {
+		var ret = "";
+		var curPRES = dataObjects.PRESs[uid];
+
+		ret += GetMenu();
+		
+		ret += "<h1>Presentation Service: " + curPRES.name + " (" + curPRES.status + ")</h1>";
+
+		return ret;
+	};
+	function displayPRES(uid) {
+		document.getElementById('MAIN').innerHTML = getPRESHtml(uid);
+		document.getElementById('MAIN').style.display = 'inline';
+	};
 	function getNOPARAMHtml() {
 		var ret = "";
 		ret += GetMenu();
@@ -291,6 +306,15 @@
 		for (cur_do = 0; cur_do < dataObjects.INTkeys.length; cur_do++) {
 			var cur_int = dataObjects.INTs[dataObjects.INTkeys[cur_do]];
 			ret += "<li><a href=\"javascript:displayINT('" + cur_int.uid + "')\">" + cur_int.name + "</a></li>";
+		}
+		ret += "</ul></td>";
+		ret += "</tr></table>";
+
+		ret += "<td valign=\"top\"><h2>Presentation Services</h1>";
+		ret += "<ul>";
+		for (cur_do = 0; cur_do < dataObjects.PRESkeys.length; cur_do++) {
+			var cur_int = dataObjects.PRESs[dataObjects.PRESkeys[cur_do]];
+			ret += "<li><a href=\"javascript:displayPRES('" + cur_int.uid + "')\">" + cur_int.name + "</a></li>";
 		}
 		ret += "</ul></td>";
 		ret += "</tr></table>";

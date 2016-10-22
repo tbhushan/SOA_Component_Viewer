@@ -11,6 +11,7 @@ function ic_soa_data_getSheetList() {
 	var ret = [];
 	ret.push("EDF");
 	ret.push("INT");
+	ret.push("PRES");
 	return ret;
 };
 
@@ -42,6 +43,20 @@ function ic_soa_data_getSheetMetrics() {
 		target_sys_col: 3,
 		source_edf_col: 2
 	};
+	ret["PRES"] = {
+		datarange: 'Presentation!A2:H',
+		sheet_name: 'Presentation',
+		css_tag: 'BLUE',
+		toprow: 2,
+		uidcol: 0,
+		indexcol: 1,
+		namecol: 3,
+		listcol: 4,
+		tagscol: 5,
+		provider_sys_col: 6,
+		known_client_col: 7,
+		rawnamecol: 2
+	};
 	
 	return ret;
 };
@@ -55,6 +70,9 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 
 	var INTkeys = [];
 	var INTs = {};
+
+	var PRESkeys = [];
+	var PRESs = {};
 
 	var SYSTEMkeys = [];
 	var SYSTEMs = {};
@@ -129,13 +147,66 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 		return;
 	}
 
+	range = googleAPIResult[2 + numPre]; //0 = PRES
+	cur_sheet_metrics = sheetMetrics[sheetList[2]];
+	if (range.values.length > 0) {
+		for (i = 0; i < range.values.length; i++) {
+			var row = range.values[i];
+			var provider_system = row[cur_sheet_metrics.provider_sys_col];
+
+			//TODO Load known clients
+			var known_clients = [];
+			var comma_seperated_list_of_clients = row[cur_sheet_metrics.known_client_col];
+			if (typeof(comma_seperated_list_of_clients)!="undefined") {
+				var client_array = comma_seperated_list_of_clients.split(",");
+				for(var i = 0; i < client_array.length; i++) {
+					known_clients.push(client_array[i].trim());
+				}
+			};
+			for(var i = 0; i < known_clients.length; i++) {
+				//Add known clients to SYSTEMs array
+				SYSTEMkeys.push(known_clients[i]);
+				SYSTEMs[known_clients[i]] = {
+					uid: known_clients[i],
+					name: known_clients[i]
+				}
+			};
+
+			PRESkeys.push(row[cur_sheet_metrics.uidcol]);
+			PRESs[row[cur_sheet_metrics.uidcol]] = {
+				uid: row[cur_sheet_metrics.uidcol],
+				name: row[cur_sheet_metrics.namecol],
+				status: row[cur_sheet_metrics.listcol],
+				tags: row[cur_sheet_metrics.tagscol],
+				sheet_row: (i+cur_sheet_metrics.toprow),
+				order: row[cur_sheet_metrics.indexcol],
+				target_system: provider_system,
+				rawname: row[cur_sheet_metrics.rawnamecol],
+				known_clients: known_clients,
+			}
+			if (typeof(SYSTEMs[provider_system])=="undefined") {
+				SYSTEMkeys.push(provider_system);
+				SYSTEMs[provider_system] = {
+					uid: provider_system,
+					name: provider_system
+				}
+			}
+		}
+	} else {
+		console.log(response);
+		report_error("Bad Data in " + cur_sheet + " range");
+		return;
+	}
+
 	return {
 		EDFkeys: EDFkeys,
 		EDFs: EDFs,
 		INTkeys: INTkeys,
 		INTs: INTs,
 		SYSTEMkeys: SYSTEMkeys,
-		SYSTEMs: SYSTEMs
+		SYSTEMs: SYSTEMs,
+		PRESkeys: PRESkeys,
+		PRESs: PRESs 
 	};
 };
 
