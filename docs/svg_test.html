@@ -65,6 +65,24 @@ function demoIntegration(y) {
 
 	return ret;
 };
+function demoPresentation(y) {
+	var ret = "";
+
+	var pres1_pos = {x:200, y:y};
+	var sys1_pos = {x:500, y:y};
+	var pres2_pos = {x:900, y:y};
+	var sys2_pos = {x:1300, y:y};
+
+	ret += ic_soa_svg_drawPresentationService("Presentation Service",pres1_pos, undefined);
+	ret += ic_soa_svg_drawSystem("System Name", sys1_pos, undefined);
+	ret += ic_soa_svg_drawPresentationService("Presentation Service 2",pres2_pos, "javascript:alert('Clicked PResentation Service 2');");
+	ret += ic_soa_svg_drawSystem("System Name", sys2_pos, undefined);
+
+	ret += ic_soa_svg_drawSyncServiceCall( ic_soa_svg_System_conectorPointLocation(sys1_pos,"right"),ic_soa_svg_PresentationService_conectorPointLocation(pres2_pos,"left"));
+	ret += ic_soa_svg_drawSyncServiceCall( ic_soa_svg_PresentationService_conectorPointLocation(pres2_pos,"right"),ic_soa_svg_System_conectorPointLocation(sys2_pos,"left"));
+
+	return ret;
+};
 
 function getHTML() {
 	var ret = "";
@@ -83,6 +101,9 @@ function getHTML() {
 
 	cur_height += 100;
 	ret += demoIntegration(cur_height);
+
+	cur_height += 100;
+	ret += demoPresentation(cur_height);
 
 	ret += "</svg>";
 	return ret;

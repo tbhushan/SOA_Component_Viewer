@@ -16,6 +16,13 @@ function ic_soa_svg_getMarkers() {
 	ret += 'orient="auto"> ';
 	ret += '<path d="M 0 0 L 10 5 L 0 10 z" /> ';
 	ret += '</marker> ';
+	ret += '<marker id="triangleR" ';
+	ret += 'viewBox="0 0 10 10" refX="8" refY="5"  ';
+	ret += 'markerUnits="strokeWidth" ';
+	ret += 'markerWidth="4" markerHeight="4" ';
+	ret += 'orient="180"> ';
+	ret += '<path d="M 0 0 L 10 5 L 0 10 z" /> ';
+	ret += '</marker> ';
 	return ret;
 };
 
@@ -137,12 +144,6 @@ function ic_soa_svg_Integration_conectorPointLocation(cord, typ) {
 };
 
 
-function ic_soa_svg_drawArrow(start,end) {
-	var ret = "";
-	ret += '<line class="arrow" x1="' + start.x + '" y1="' + start.y + '" x2="' + end.x + '" y2="' + end.y + '"/>';
-	return ret;
-};
-
 function ic_soa_svg_drawIntegrationWithTarget(name, targ_sys_name, cord, int_link, sys_link) {
 	var ret = "";
 	var int_pos = {x:(cord.x),y:(cord.y)};
@@ -152,4 +153,80 @@ function ic_soa_svg_drawIntegrationWithTarget(name, targ_sys_name, cord, int_lin
 	ret += ic_soa_svg_drawArrow(ic_soa_svg_Integration_conectorPointLocation(int_pos,"right"), ic_soa_svg_System_conectorPointLocation(sys_pos,"left"));
 	return ret;
 }
+
+//Point to point integration
+// Yellow rhombus with wider base than top
+//TODO
+
+//Presentation Service
+//Blue rectangle
+//Also use service provider caller style arror
+function ic_soa_svg_drawPresentationService(name, cord, link) {
+	var ret = "";
+	
+	var rect_width = 350;
+	var rect_height = 30;
+
+	ret += '<rect class="presentation" x="' + (cord.x - (rect_width/2)) + '" y="' + (cord.y - (rect_height/2)) + '" width="' + rect_width + '" height="' + rect_height + '" />';
+	if (typeof(link)=="undefined") {
+		ret += '<text class="edf" x="' + cord.x + '" y="' + cord.y + '" >';
+		ret += name;
+		ret += "</text>";
+	} else {
+		ret += '<text class="edf link" x="' + cord.x + '" y="' + cord.y + '" onclick="' + link + '">';
+		ret += name;
+		ret += "</text>";
+	};
+
+	return ret;
+}
+function ic_soa_svg_PresentationService_conectorPointLocation(cord, typ) {
+	if (typ=="left") {
+		return {x:(cord.x-((350/2) + conectorPointSpacing)), y:cord.y }
+	};
+	if (typ=="right") {
+		return {x:(cord.x+((350/2) + conectorPointSpacing)), y:cord.y }
+	};
+	return cord; //default to center
+};
+
+//****CONNECTORS BELOW***
+
+//Connector - Simple Arrow
+function ic_soa_svg_drawArrow(start,end, double_head) {
+	var ret = "";
+
+	var arrow_class = "singlearrow";
+	if (typeof(double_head)!="undefined") arrow_class = "doublearrow";
+
+	ret += '<line class="' + arrow_class + '" x1="' + start.x + '" y1="' + start.y + '" x2="' + end.x + '" y2="' + end.y + '"/>';
+	return ret;
+};
+
+function ic_soa_svg_drawSyncServiceCall(start,end) {
+	var ret = "";
+
+	var outer_center_circle_radius = 10;
+	var outer_center_circle_stroke = 3;
+
+	ret += ic_soa_svg_drawArrow(start,end,true);
+
+	var mid_pos = {x:((start.x+end.x)/2), y:((start.y+end.y)/2)};
+
+	ret += '<circle cx="' + mid_pos.x + '" cy="' + mid_pos.y + '" r="' + outer_center_circle_radius + '" stroke="black" fill="white" stroke-width="' + outer_center_circle_stroke + '" />';
+
+
+	//Blanking rect
+	var blanking_rect_height = (outer_center_circle_radius + outer_center_circle_stroke) * 2;
+	var blanking_rect_width = blanking_rect_height / 2;
+	ret += '<rect x="' + (mid_pos.x) + '" y="' + (mid_pos.y - (blanking_rect_height)/2) + '" width="' + (blanking_rect_width) + '" height="' + (blanking_rect_height) + '" stroke-width="0" fill="white" />';
+	ret += '<circle cx="' + mid_pos.x + '" cy="' + mid_pos.y + '" r="5" stroke="black" fill="black" stroke-width="0" />';
+
+	//Repair line (Line to redraw the piece of line that was removed
+	ret += '<line class="headless" x1="' + mid_pos.x + '" y1="' + mid_pos.y + '" x2="' + end.x + '" y2="' + end.y + '"/>';
+
+
+	return ret;
+};
+
 
