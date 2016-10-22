@@ -1,0 +1,106 @@
+<html>
+<head>
+
+<!--js files for ic_soa_svg sheets-->
+<script src="ic_soa_svg.js"></script>
+
+<!-- css files for ic_soa_svg -->
+<link rel="stylesheet" href="ic_soa_svg.css" type="text/css" charset="utf-8">
+
+
+<script>
+"use strict";
+
+/*
+This code works with lots of demo's
+each demo is given a spercific y co-ordinate 
+*/
+
+function demoSystem(y) {
+	var ret = "";
+
+	var sys1_pos = {x:100, y:y};
+	var sys2_pos = {x:300, y:y};
+	var sys3_pos = {x:500, y:y};
+
+	ret += ic_soa_svg_drawSystem("System Name", sys1_pos, undefined);
+	ret += ic_soa_svg_drawSystem("System Name2", sys2_pos, "javascript:alert('Clicked System2');");
+	ret += ic_soa_svg_drawSystem("System Name3", sys3_pos, "javascript:alert('Clicked System3');");
+
+	ret += ic_soa_svg_drawArrow( ic_soa_svg_System_conectorPointLocation(sys2_pos,"right"),ic_soa_svg_System_conectorPointLocation(sys3_pos,"left"));
+
+	return ret;
+};
+function demoEDF(y) {
+	var ret = "";
+
+	var edf1_pos = {x:200, y:y};
+	var sys_pos = {x:450, y:y};
+	var edf2_pos = {x:750, y:y};
+	var int_pos = {x:1200, y:y};
+	ret += ic_soa_svg_drawEDF("EDF Name", edf1_pos, undefined);
+	ret += ic_soa_svg_drawSystem("System Name", sys_pos, undefined);
+	ret += ic_soa_svg_drawEDF("EDF Name2", edf2_pos, "javascript:alert('Clicked EDF2');");
+	ret += ic_soa_svg_drawIntegration("Integration Name", int_pos, undefined);
+
+	ret += ic_soa_svg_drawArrow( ic_soa_svg_System_conectorPointLocation(sys_pos,"right"),ic_soa_svg_EDF_conectorPointLocation(edf2_pos,"left"));
+	ret += ic_soa_svg_drawArrow( ic_soa_svg_EDF_conectorPointLocation(edf2_pos,"right"),ic_soa_svg_Integration_conectorPointLocation(int_pos,"left"));
+
+	return ret;
+};
+function demoIntegration(y) {
+	var ret = "";
+
+	var int1_pos = {x:210, y:y};
+	var edf_pos = {x:600, y:y};
+	var int2_pos = {x:1050, y:y};
+	var sys_pos = {x:1400, y:y};
+	ret += ic_soa_svg_drawIntegration("Integration Name",int1_pos, undefined);
+	ret += ic_soa_svg_drawEDF("EDF Name", edf_pos, undefined);
+	ret += ic_soa_svg_drawIntegration("Integration Name2",int2_pos, "javascript:alert('Clicked INT2');");
+	ret += ic_soa_svg_drawSystem("System Name", sys_pos, undefined);
+
+	ret += ic_soa_svg_drawArrow( ic_soa_svg_EDF_conectorPointLocation(edf_pos,"right"),ic_soa_svg_Integration_conectorPointLocation(int2_pos,"left"));
+	ret += ic_soa_svg_drawArrow( ic_soa_svg_Integration_conectorPointLocation(int2_pos,"right"),ic_soa_svg_System_conectorPointLocation(sys_pos,"left"));
+
+	return ret;
+};
+
+function getHTML() {
+	var ret = "";
+
+
+	var svg_height = 700;
+
+	var cur_height = 100;
+
+	ret += "<svg class=\"ic_soa_svg\" style=\"width: 1500; height: " + svg_height + ";\">";
+	ret += ic_soa_svg_getMarkers();
+	ret += demoSystem(cur_height);
+
+	cur_height += 100;
+	ret += demoEDF(cur_height);
+
+	cur_height += 100;
+	ret += demoIntegration(cur_height);
+
+	ret += "</svg>";
+	return ret;
+}
+
+function mainOnLoad() {
+	document.getElementById('MAIN').innerHTML = getHTML();
+};
+
+</script>
+
+<title>SVG Test</title>
+</head>
+<body onload="mainOnLoad()">
+<a href="index.html">Back to menu</a><br />
+<div id="MAIN" style="display: inline">
+	<h1>MAIN DIV not created - Javascript not run</h1>
+</div>
+
+</body>
+</html>
