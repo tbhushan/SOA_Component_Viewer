@@ -154,7 +154,7 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 			var row = range.values[i];
 			var provider_system = row[cur_sheet_metrics.provider_sys_col];
 
-			//TODO Load known clients
+			//Load known clients
 			var known_clients = [];
 			var comma_seperated_list_of_clients = row[cur_sheet_metrics.known_client_col];
 			if (typeof(comma_seperated_list_of_clients)!="undefined") {
@@ -164,12 +164,14 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 				}
 			};
 			for(var i = 0; i < known_clients.length; i++) {
-				//Add known clients to SYSTEMs array
-				SYSTEMkeys.push(known_clients[i]);
-				SYSTEMs[known_clients[i]] = {
-					uid: known_clients[i],
-					name: known_clients[i]
-				}
+				if (typeof(SYSTEMs[known_clients[i]])=="undefined") {
+					//Add known clients to SYSTEMs array
+					SYSTEMkeys.push(known_clients[i]);
+					SYSTEMs[known_clients[i]] = {
+						uid: known_clients[i],
+						name: known_clients[i]
+					}
+				};
 			};
 
 			PRESkeys.push(row[cur_sheet_metrics.uidcol]);
@@ -180,7 +182,7 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 				tags: row[cur_sheet_metrics.tagscol],
 				sheet_row: (i+cur_sheet_metrics.toprow),
 				order: row[cur_sheet_metrics.indexcol],
-				target_system: provider_system,
+				provider_system: provider_system,
 				rawname: row[cur_sheet_metrics.rawnamecol],
 				known_clients: known_clients,
 			}

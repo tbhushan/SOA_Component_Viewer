@@ -20,7 +20,7 @@ function ic_soa_svg_getMarkers() {
 	ret += 'viewBox="0 0 10 10" refX="8" refY="5"  ';
 	ret += 'markerUnits="strokeWidth" ';
 	ret += 'markerWidth="4" markerHeight="4" ';
-	ret += 'orient="180"> ';
+	ret += 'orient="auto-start-reverse"> ';
 	ret += '<path d="M 0 0 L 10 5 L 0 10 z" /> ';
 	ret += '</marker> ';
 	return ret;
