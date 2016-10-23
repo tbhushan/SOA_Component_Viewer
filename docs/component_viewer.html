@@ -139,9 +139,15 @@
 		ret += "<svg class=\"ic_soa_svg\" style=\"width: 1300; height: " + svg_height + ";\">";
 		ret += ic_soa_svg_getMarkers();
 		ret += ic_soa_svg_drawSystem(system_object.name,system_pos);
-		
-		//Draw INTS (on left)
+
+		var vert_pitch = 100; //Vertical distance between rows
+
+		//Draw LEFT (target side)
 		var pos = {x:250, y:50};
+		if (src_side_to_draw > targ_side_to_draw) {
+			pos.y += ((src_side_to_draw - targ_side_to_draw)/2)*vert_pitch;
+		};
+		//Draw INTS (on left)
 		for (cur_do = 0; cur_do < ints_to_draw.length; cur_do++) {
 			ret += ic_soa_svg_drawIntegration(
 						ints_to_draw[cur_do].name,
@@ -149,7 +155,7 @@
 						"javascript:displayINT('" + ints_to_draw[cur_do].uid + "')"
 			);
 			ret += ic_soa_svg_drawArrow(ic_soa_svg_Integration_conectorPointLocation(pos,"right"),ic_soa_svg_System_conectorPointLocation(system_pos,"left"));
-			pos.y = pos.y + 100;
+			pos.y = pos.y + vert_pitch;
 		}
 		//Draw SOURCE Presentation Services below the INTS (on left)
 		for (cur_do = 0; cur_do < source_pres_to_draw.length; cur_do++) {
@@ -159,11 +165,15 @@
 						"javascript:displayPRES('" + source_pres_to_draw[cur_do].uid + "')"
 			);
 			ret += ic_soa_svg_drawSyncServiceCall(ic_soa_svg_PresentationService_conectorPointLocation(pos,"right"),ic_soa_svg_System_conectorPointLocation(system_pos,"left"));
-			pos.y = pos.y + 100;
+			pos.y = pos.y + vert_pitch;
 		}
 		
-		//Draw EDFS (on right)
+		//Draw RIGHT (source side)
 		var pos = {x:1000, y:50};
+		if (targ_side_to_draw > src_side_to_draw) {
+			pos.y += ((targ_side_to_draw - src_side_to_draw)/2)*vert_pitch;
+		};
+		//Draw EDFS (on right)
 		for (cur_do = 0; cur_do < edfs_to_draw.length; cur_do++) {
 			ret += ic_soa_svg_drawEDF(
 						edfs_to_draw[cur_do].name,
@@ -171,7 +181,7 @@
 						"javascript:displayEDF('" + edfs_to_draw[cur_do].uid + "')"
 			);
 			ret += ic_soa_svg_drawArrow(ic_soa_svg_System_conectorPointLocation(system_pos,"right"),ic_soa_svg_EDF_conectorPointLocation(pos,"left"));
-			pos.y = pos.y + 100;
+			pos.y = pos.y + vert_pitch;
 		}
 		//Draw TARGET Presentation Services below the EDFS (on right)
 		for (cur_do = 0; cur_do < target_pres_to_draw.length; cur_do++) {
@@ -181,7 +191,7 @@
 						"javascript:displayPRES('" + target_pres_to_draw[cur_do].uid + "')"
 			);
 			ret += ic_soa_svg_drawSyncServiceCall(ic_soa_svg_System_conectorPointLocation(system_pos,"right"),ic_soa_svg_PresentationService_conectorPointLocation(pos,"left"));
-			pos.y = pos.y + 100;
+			pos.y = pos.y + vert_pitch;
 		}
 
 		
