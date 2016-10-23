@@ -410,7 +410,7 @@
 				provider_system_pos,
 				"javascript:displaySYSTEM('" + provider_system_object.uid + "')"
 			);
-			ret += ic_soa_svg_drawArrow( ic_soa_svg_System_conectorPointLocation(provider_system_pos,"right"),ic_soa_svg_Point_conectorPointLocation(point_pos,"left"));
+			ret += ic_soa_svg_drawArrow( ic_soa_svg_System_conectorPointLocation(provider_system_pos,"right"),ic_soa_svg_Point_conectorPointLocation(point_pos,"left"),true);
 			provider_system_pos.y = provider_system_pos.y + vert_pitch;
 		}
 
@@ -426,7 +426,7 @@
 				client_system_pos,
 				"javascript:displaySYSTEM('" + client_system_object.uid + "')"
 			);
-			ret += ic_soa_svg_drawArrow( ic_soa_svg_Point_conectorPointLocation(point_pos,"right"),ic_soa_svg_System_conectorPointLocation(client_system_pos,"left"));
+			ret += ic_soa_svg_drawArrow( ic_soa_svg_Point_conectorPointLocation(point_pos,"right"),ic_soa_svg_System_conectorPointLocation(client_system_pos,"left"),true);
 			client_system_pos.y = client_system_pos.y + vert_pitch;
 		}
 
