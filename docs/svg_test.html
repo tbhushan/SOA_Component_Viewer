@@ -83,6 +83,24 @@ function demoPresentation(y) {
 
 	return ret;
 };
+function demoPoint(y) {
+	var ret = "";
+
+	var point1_pos = {x:250, y:y};
+	var sys1_pos = {x:550, y:y};
+	var point2_pos = {x:950, y:y};
+	var sys2_pos = {x:1350, y:y};
+
+	ret += ic_soa_svg_drawPoint("Point 2 Point Integration",point1_pos, undefined);
+	ret += ic_soa_svg_drawSystem("System Name", sys1_pos, undefined);
+	ret += ic_soa_svg_drawPoint("Point 2 Point Integration 2",point2_pos, "javascript:alert('Clicked Point 2 Point Integration 2');");
+	ret += ic_soa_svg_drawSystem("System Name", sys2_pos, undefined);
+
+	ret += ic_soa_svg_drawArrow( ic_soa_svg_System_conectorPointLocation(sys1_pos,"right"),ic_soa_svg_Point_conectorPointLocation(point2_pos,"left"));
+	ret += ic_soa_svg_drawArrow( ic_soa_svg_Point_conectorPointLocation(point2_pos,"right"),ic_soa_svg_System_conectorPointLocation(sys2_pos,"left"));
+
+	return ret;
+};
 
 function getHTML() {
 	var ret = "";
@@ -104,6 +122,9 @@ function getHTML() {
 
 	cur_height += 100;
 	ret += demoPresentation(cur_height);
+
+	cur_height += 100;
+	ret += demoPoint(cur_height);
 
 	ret += "</svg>";
 	return ret;

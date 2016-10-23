@@ -60,5 +60,9 @@ svg.ic_soa_svg rect.presentation {
 	stroke: black;
 }
 
-
+svg.ic_soa_svg polygon.point {
+	fill: yellow;
+	stroke-width: 1;
+	stroke: black;
+}
 

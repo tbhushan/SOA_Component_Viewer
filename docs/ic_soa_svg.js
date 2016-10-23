@@ -121,7 +121,7 @@ function ic_soa_svg_drawIntegration(name, cord, link) {
 	points.push({x:right_x, y:(cord.y)});
 	points.push({x:right_x-ax, y:(cord.y+ay)});
 	points.push({x:left_x+ax, y:(cord.y+ay)});
-	points.push({x:left_x, y:cord.y});
+	//points.push({x:left_x, y:cord.y}); //Don't need to connect back to start
 	
 	ret += '<polygon class="int" points="' + ic_soa_svg_getpointsstring(points) + '" />';
 	
@@ -156,7 +156,42 @@ function ic_soa_svg_drawIntegrationWithTarget(name, targ_sys_name, cord, int_lin
 
 //Point to point integration
 // Yellow rhombus with wider base than top
-//TODO
+function ic_soa_svg_drawPoint(name, cord, link) {
+	var ret = "";
+	
+	var width = 400;
+	var height = 30;
+	var x_indent_size = 20; 
+
+	var points = [];
+	points.push({x:((cord.x)-(width/2))+x_indent_size, y:((cord.y)-(height/2))});
+	points.push({x:((cord.x)-(width/2)), y:((cord.y)+(height/2))});
+	points.push({x:((cord.x)+(width/2)), y:((cord.y)+(height/2))});
+	points.push({x:((cord.x)+(width/2))-x_indent_size, y:((cord.y)-(height/2))});
+
+
+	ret += '<polygon class="point" points="' + ic_soa_svg_getpointsstring(points) + '" />';
+	if (typeof(link)=="undefined") {
+		ret += '<text class="edf" x="' + cord.x + '" y="' + cord.y + '" >';
+		ret += name;
+		ret += "</text>";
+	} else {
+		ret += '<text class="edf link" x="' + cord.x + '" y="' + cord.y + '" onclick="' + link + '">';
+		ret += name;
+		ret += "</text>";
+	};
+
+	return ret;
+}
+function ic_soa_svg_Point_conectorPointLocation(cord, typ) {
+	if (typ=="left") {
+		return {x:(cord.x-((400/2) + conectorPointSpacing)), y:cord.y }
+	};
+	if (typ=="right") {
+		return {x:(cord.x+((400/2) + conectorPointSpacing)), y:cord.y }
+	};
+	return cord; //default to center
+};
 
 //Presentation Service
 //Blue rectangle
