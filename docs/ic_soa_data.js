@@ -150,8 +150,8 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 	range = googleAPIResult[2 + numPre]; //0 = PRES
 	cur_sheet_metrics = sheetMetrics[sheetList[2]];
 	if (range.values.length > 0) {
-		for (i = 0; i < range.values.length; i++) {
-			var row = range.values[i];
+		for (var cur_range = 0; cur_range < range.values.length; cur_range++) {
+			var row = range.values[cur_range];
 			var provider_system = row[cur_sheet_metrics.provider_sys_col];
 
 			//Load known clients
