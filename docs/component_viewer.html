@@ -118,21 +118,40 @@
 				if (cur_pres.known_clients[i]==system_object.name) source_pres_to_draw.push(cur_pres);
 			}
 		};
+		var source_point_to_draw = [];
+		for (cur_do = 0; cur_do < dataObjects.POINTkeys.length; cur_do++) {
+			var cur_p2p = dataObjects.POINTs[dataObjects.POINTkeys[cur_do]];
+			for(var i = 0; i < cur_p2p.client_systems.length; i++) {
+				//console.log(cur_pres.client_systems[i]);
+				if (cur_p2p.client_systems[i]==system_object.name) source_point_to_draw.push(cur_p2p);
+			}
+		};
+		var target_point_to_draw = [];
+		for (cur_do = 0; cur_do < dataObjects.POINTkeys.length; cur_do++) {
+			var cur_p2p = dataObjects.POINTs[dataObjects.POINTkeys[cur_do]];
+			for(var i = 0; i < cur_p2p.provider_systems.length; i++) {
+				//console.log(cur_pres.provider_systems[i]);
+				if (cur_p2p.provider_systems[i]==system_object.name) target_point_to_draw.push(cur_p2p);
+			}
+		};
 		
 		//console.log("Ints:" + ints_to_draw.length);
 		//console.log("EDFs:" + edfs_to_draw.length);
 		//console.log("target_pres:" + target_pres_to_draw.length);
 		//console.log("source_pres:" + source_pres_to_draw.length);
+		//console.log("source point2point:" + source_point_to_draw.length);
+		//console.log("target point2point:" + target_point_to_draw.length);
 
 		ret += "<h1>System: " + system_object.name + "</h1>";
+		var vert_pitch = 80; //Vertical distance between rows
 		
-		var src_side_to_draw = (edfs_to_draw.length + target_pres_to_draw.length);
-		var targ_side_to_draw = (ints_to_draw.length + source_pres_to_draw.length);
+		var src_side_to_draw = (edfs_to_draw.length + target_pres_to_draw.length + target_point_to_draw.length);
+		var targ_side_to_draw = (ints_to_draw.length + source_pres_to_draw.length + source_point_to_draw.length);
 
 		var max_eles = src_side_to_draw;
 		if (max_eles < targ_side_to_draw) max_eles = targ_side_to_draw;
-		var svg_height = max_eles * 100;
-		if (svg_height<100) svg_height = 100;
+		var svg_height = max_eles * vert_pitch;
+		if (svg_height<vert_pitch) svg_height = vert_pitch;
 		
 		var system_pos = {x:600, y:(svg_height/2)}
 
@@ -140,9 +159,8 @@
 		ret += ic_soa_svg_getMarkers();
 		ret += ic_soa_svg_drawSystem(system_object.name,system_pos);
 
-		var vert_pitch = 100; //Vertical distance between rows
 
-		//Draw LEFT (target side)
+		//Draw LEFT (source side)
 		var pos = {x:250, y:50};
 		if (src_side_to_draw > targ_side_to_draw) {
 			pos.y += ((src_side_to_draw - targ_side_to_draw)/2)*vert_pitch;
@@ -167,8 +185,19 @@
 			ret += ic_soa_svg_drawSyncServiceCall(ic_soa_svg_PresentationService_conectorPointLocation(pos,"right"),ic_soa_svg_System_conectorPointLocation(system_pos,"left"));
 			pos.y = pos.y + vert_pitch;
 		}
+		//Draw SOURCE Point to Point Integrations (on left)
+		for (cur_do = 0; cur_do < source_point_to_draw.length; cur_do++) {
+			ret += ic_soa_svg_drawPoint(
+						source_point_to_draw[cur_do].name,
+						pos,
+						"javascript:displayPOINT('" + source_point_to_draw[cur_do].uid + "')"
+			);
+			ret += ic_soa_svg_drawArrow(ic_soa_svg_Point_conectorPointLocation(pos,"right"),ic_soa_svg_System_conectorPointLocation(system_pos,"left"),true);
+			pos.y = pos.y + vert_pitch;
+		}
+
 		
-		//Draw RIGHT (source side)
+		//Draw RIGHT (target side)
 		var pos = {x:1000, y:50};
 		if (targ_side_to_draw > src_side_to_draw) {
 			pos.y += ((targ_side_to_draw - src_side_to_draw)/2)*vert_pitch;
@@ -191,6 +220,16 @@
 						"javascript:displayPRES('" + target_pres_to_draw[cur_do].uid + "')"
 			);
 			ret += ic_soa_svg_drawSyncServiceCall(ic_soa_svg_System_conectorPointLocation(system_pos,"right"),ic_soa_svg_PresentationService_conectorPointLocation(pos,"left"));
+			pos.y = pos.y + vert_pitch;
+		}
+		//Draw TARGET Porint to Point Integrations (on right)
+		for (cur_do = 0; cur_do < target_point_to_draw.length; cur_do++) {
+			ret += ic_soa_svg_drawPoint(
+						target_point_to_draw[cur_do].name,
+						pos,
+						"javascript:displayPOINT('" + target_point_to_draw[cur_do].uid + "')"
+			);
+			ret += ic_soa_svg_drawArrow(ic_soa_svg_System_conectorPointLocation(system_pos,"right"),ic_soa_svg_Point_conectorPointLocation(pos,"left"),true);
 			pos.y = pos.y + vert_pitch;
 		}
 
@@ -373,6 +412,7 @@
 			console.log("ERROR no Point 2 Point Integration with uid " + uid);
 			return;
 		}
+		var vert_pitch = 100; //Vertical distance between rows
 
 		var provider_systems_to_draw = curPOINT.provider_systems;
 		var client_systems_to_draw = curPOINT.client_systems;
@@ -382,8 +422,8 @@
 
 		var max_eles = src_side_to_draw;
 		if (max_eles < targ_side_to_draw) max_eles = targ_side_to_draw;
-		var svg_height = max_eles * 100;
-		if (svg_height<100) svg_height = 100;
+		var svg_height = max_eles * vert_pitch;
+		if (svg_height<vert_pitch) svg_height = vert_pitch;
 
 		ret += GetMenu();
 		
@@ -395,8 +435,6 @@
 		ret += ic_soa_svg_getMarkers();
 
 		ret += ic_soa_svg_drawPoint(curPOINT.name,point_pos);
-
-		var vert_pitch = 100; //Vertical distance between rows
 
 		//Draw left side (source/provider side)
 		var provider_system_pos = {x:200, y:50};
