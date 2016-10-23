@@ -12,6 +12,7 @@ function ic_soa_data_getSheetList() {
 	ret.push("EDF");
 	ret.push("INT");
 	ret.push("PRES");
+	ret.push("POINT");
 	return ret;
 };
 
@@ -57,8 +58,47 @@ function ic_soa_data_getSheetMetrics() {
 		known_client_col: 7,
 		rawnamecol: 2
 	};
-	
+	ret["POINT"] = {
+		datarange: 'Point2Point!A2:H',
+		sheet_name: 'Point2Point',
+		css_tag: 'YELLOW',
+		toprow: 2,
+		uidcol: 0,
+		indexcol: 1,
+		namecol: 3,
+		listcol: 4,
+		tagscol: 5,
+		provider_sys_list_col: 6,
+		client_list_col: 7,
+		rawnamecol: 2
+	};	
 	return ret;
+};
+
+/*
+Function to load system array from comma seperated list
+returns an array of systems
+if required adds the system to the SYSTEMs list
+*/
+function ic_soa_data_loadSYSTEMSFromCommaList(commaListOfSystems, SYSTEMs, SYSTEMkeys) {
+	var return_array = [];
+	if (typeof(commaListOfSystems)!="undefined") {
+		var sys_array = commaListOfSystems.split(",");
+		for(var i = 0; i < sys_array.length; i++) {
+			return_array.push(sys_array[i].trim());
+		}
+	};
+	for(var i = 0; i < return_array.length; i++) {
+		if (typeof(SYSTEMs[return_array[i]])=="undefined") {
+			//Add known clients to SYSTEMs array
+			SYSTEMkeys.push(return_array[i]);
+			SYSTEMs[return_array[i]] = {
+				uid: return_array[i],
+				name: return_array[i]
+			}
+		};
+	};
+	return return_array;
 };
 
 function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, numPre) {
@@ -73,6 +113,9 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 
 	var PRESkeys = [];
 	var PRESs = {};
+
+	var POINTkeys = [];
+	var POINTs = {};
 
 	var SYSTEMkeys = [];
 	var SYSTEMs = {};
@@ -155,24 +198,7 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 			var provider_system = row[cur_sheet_metrics.provider_sys_col];
 
 			//Load known clients
-			var known_clients = [];
-			var comma_seperated_list_of_clients = row[cur_sheet_metrics.known_client_col];
-			if (typeof(comma_seperated_list_of_clients)!="undefined") {
-				var client_array = comma_seperated_list_of_clients.split(",");
-				for(var i = 0; i < client_array.length; i++) {
-					known_clients.push(client_array[i].trim());
-				}
-			};
-			for(var i = 0; i < known_clients.length; i++) {
-				if (typeof(SYSTEMs[known_clients[i]])=="undefined") {
-					//Add known clients to SYSTEMs array
-					SYSTEMkeys.push(known_clients[i]);
-					SYSTEMs[known_clients[i]] = {
-						uid: known_clients[i],
-						name: known_clients[i]
-					}
-				};
-			};
+			var known_clients = ic_soa_data_loadSYSTEMSFromCommaList(row[cur_sheet_metrics.known_client_col], SYSTEMs, SYSTEMkeys);
 
 			PRESkeys.push(row[cur_sheet_metrics.uidcol]);
 			PRESs[row[cur_sheet_metrics.uidcol]] = {
@@ -200,6 +226,34 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 		return;
 	}
 
+	range = googleAPIResult[3 + numPre]; //0 = POINT
+	cur_sheet_metrics = sheetMetrics[sheetList[3]];
+	if (range.values.length > 0) {
+		for (var cur_range = 0; cur_range < range.values.length; cur_range++) {
+			var row = range.values[cur_range];
+
+			var provider_syss = ic_soa_data_loadSYSTEMSFromCommaList(row[cur_sheet_metrics.provider_sys_list_col], SYSTEMs, SYSTEMkeys);
+			var client_syss = ic_soa_data_loadSYSTEMSFromCommaList(row[cur_sheet_metrics.client_list_col], SYSTEMs, SYSTEMkeys);
+
+			POINTkeys.push(row[cur_sheet_metrics.uidcol]);
+			POINTs[row[cur_sheet_metrics.uidcol]] = {
+				uid: row[cur_sheet_metrics.uidcol],
+				name: row[cur_sheet_metrics.namecol],
+				status: row[cur_sheet_metrics.listcol],
+				tags: row[cur_sheet_metrics.tagscol],
+				sheet_row: (i+cur_sheet_metrics.toprow),
+				order: row[cur_sheet_metrics.indexcol],
+				provider_systems: provider_syss,
+				rawname: row[cur_sheet_metrics.rawnamecol],
+				client_systems: client_syss,
+			}
+		}
+	} else {
+		console.log(response);
+		report_error("Bad Data in " + cur_sheet + " range");
+		return;
+	}
+
 	return {
 		EDFkeys: EDFkeys,
 		EDFs: EDFs,
@@ -208,7 +262,9 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 		SYSTEMkeys: SYSTEMkeys,
 		SYSTEMs: SYSTEMs,
 		PRESkeys: PRESkeys,
-		PRESs: PRESs 
+		PRESs: PRESs,
+		POINTkeys: POINTkeys,
+		POINTs: POINTs 
 	};
 };
 
