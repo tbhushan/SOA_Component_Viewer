@@ -72,7 +72,7 @@ function getSYSTEMHtml(uid) {
 
 
 	//Draw LEFT (source side)
-	var pos = {x:250, y:50};
+	var pos = {x:250, y:(vert_pitch/2)};
 	if (src_side_to_draw > targ_side_to_draw) {
 		pos.y += ((src_side_to_draw - targ_side_to_draw)/2)*vert_pitch;
 	};
@@ -109,7 +109,7 @@ function getSYSTEMHtml(uid) {
 
 	
 	//Draw RIGHT (target side)
-	var pos = {x:1000, y:50};
+	var pos = {x:1000, y:(vert_pitch/2)};
 	if (targ_side_to_draw > src_side_to_draw) {
 		pos.y += ((targ_side_to_draw - src_side_to_draw)/2)*vert_pitch;
 	};
