@@ -21,6 +21,10 @@ table.kanbancomponent td {
 	margin: 0;
 }
 
+table.kanbancomponent td.ui-state-active {
+	background-color: lightgrey;
+}
+
 table.kanbancomponent div.card {
     border: 1px solid black;
     padding: 10;
