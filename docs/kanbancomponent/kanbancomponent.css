@@ -1,0 +1,41 @@
+
+table.kanbancomponent {
+	border: 2px solid black;
+	height: 100%;
+	width: 100%;
+	border-spacing: 0;
+	border-collapse: separate;
+}
+
+table.kanbancomponent tr.mainrow {
+	height: 100%;
+}
+
+table.kanbancomponent th {
+	border: 2px solid black;
+}
+
+table.kanbancomponent td {
+	border: 2px solid black;
+	vertical-align: top;
+	margin: 0;
+}
+
+table.kanbancomponent div.card {
+    border: 1px solid black;
+    padding: 10;
+    margin: 5;	
+}
+table.kanbancomponent div.card  div.tag{
+	text-align:right;
+	font-style: italic;
+}
+
+ 
+
+table.kanbancomponent div.card.red {
+	background-color: pink;
+}
+table.kanbancomponent div.card.green {
+	background-color: lightgreen;
+}
