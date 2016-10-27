@@ -94,62 +94,10 @@ function kanbancomponent_create(onAfterDrop, onListItemDblClick) {
 	return html;
 }
 
-function kanbancomponent_setupdragevents() {
-		//Make cards draggable
-	$("table.kanbancomponent .card").draggable({ 
-        revert:  function(dropped) {
-           var dropped = dropped && dropped[0].id == "droppable";
-           //if(!dropped) alert("I'm reverting!");
-           return !dropped;
-        } 
-    }).each(function() {
-        var top = $(this).position().top;
-        var left = $(this).position().left;
-        $(this).data('orgTop', top);
-        $(this).data('orgLeft', left);
-    });
-	
-	//Make main cells droppable
-	$("table.kanbancomponent tr.mainrow td").droppable({
-		hoverClass: "ui-state-active",
-		drop: function( event, ui ) {
-			var td_dropped_into = $(this);
-			var status_of_td_dropped_into = td_dropped_into.data("status");
-			var data_item_being_dropped_pos = $(ui.draggable[0]).data("data_pos");
-			var data_item_being_dropped = kanbancomponent_chart_obj.data[data_item_being_dropped_pos];
-			var orig_list = data_item_being_dropped.status;
-			
-			if (orig_list==status_of_td_dropped_into) {
-				//Dragging within SAME list
-				console.log("SAME LIST");
-				return;
-			};
-			
-			//Dragging from one list to the other
-			//In this case always add to the bottom of the list
-
-			//Update data
-			data_item_being_dropped.status=status_of_td_dropped_into;
-			
-			td_dropped_into.append(knabancomponent_getcardHTML({data_pos:data_item_being_dropped_pos, obj: data_item_being_dropped}));
-			//Make appended card draggable
-			kanbancomponent_setupdragevents();
-			
-			//Delete floating object
-			ui.draggable.remove();
-			
-			
-			console.log("TODO CALLBACK UPDATE LIST Move " + data_item_being_dropped.text + " from " + orig_list + " to " + status_of_td_dropped_into);
-		}	
-	});
-};
-
 //called after html is in document
 function kanbancomponent_init() {
 	//Set all table widths high so they all end up with the same width
 	$("table.kanbancomponent tr.headrow th").width(10000);
-	
-	//kanbancomponent_setupdragevents();
 	
 	$("table.kanbancomponent tr.mainrow td ").sortable({
 		start: function() {
@@ -160,8 +108,23 @@ function kanbancomponent_init() {
 			$("table.kanbancomponent tr.mainrow td ").removeClass('ui-state-active');
 			$(this).addClass('ui-state-active');
 		},
-		stop: function() {
+		stop: function(event, ui) {
 			$("table.kanbancomponent tr.mainrow td ").removeClass('ui-state-active');
+
+			var data_item_being_dropped_pos = $(ui.item[0]).data("data_pos");
+			var data_item_being_dropped = kanbancomponent_chart_obj.data[data_item_being_dropped_pos];
+
+			var column_being_droped_into = $(ui.item[0].closest("td"));
+
+			var orig_status = $($(this)[0]).data("status");
+			var new_Status = column_being_droped_into.data("status");
+
+
+			console.log("TODO CALLBACK UPDATE LIST Move " + data_item_being_dropped.text + " from " + orig_status + " to " + new_Status);
+
+			//TODO Change data item status
+			//TODO Go through new status column and set the order property of each item
+
 		},
 		connectWith: "table.kanbancomponent tr.mainrow td"
 	});
