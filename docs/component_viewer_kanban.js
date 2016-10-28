@@ -55,6 +55,40 @@ function loadDataIntoKanbanComponent() {
 					}
 				);
 			};
+		} else if ("PRES"==sm[cur_sheet]) {
+			for (var cur_do = 0; cur_do < dataObjects.PRESkeys.length; cur_do++) {
+				var cur_pres = dataObjects.PRESs[dataObjects.PRESkeys[cur_do]];
+				data.push(
+					{ 
+						id: (1000 * cur_sheet) + cur_pres.uid, 
+						text:cur_pres.name, 
+						status: cur_pres.status, 
+						$css: cur_sheet_data.css_tag, 
+						tags: cur_pres.tags, 
+						sheet_row: cur_pres.sheet_row,
+						sheet_data_item: cur_sheet,
+						$order: cur_pres.order,
+						view_link: undefined
+					}
+				);
+			};			
+		} else if ("POINT"==sm[cur_sheet]) {
+			for (var cur_do = 0; cur_do < dataObjects.POINTkeys.length; cur_do++) {
+				var cur_point = dataObjects.POINTs[dataObjects.POINTkeys[cur_do]];
+				data.push(
+					{ 
+						id: (1000 * cur_sheet) + cur_point.uid, 
+						text:cur_point.name, 
+						status: cur_point.status, 
+						$css: cur_sheet_data.css_tag, 
+						tags: cur_point.tags, 
+						sheet_row: cur_point.sheet_row,
+						sheet_data_item: cur_sheet,
+						$order: cur_point.order,
+						view_link: undefined
+					}
+				);
+			};			
 		} else {
 			console.log("Unknown sheet - " + sm[cur_sheet] + " kanban cards not loaded for this sheet");
 		};

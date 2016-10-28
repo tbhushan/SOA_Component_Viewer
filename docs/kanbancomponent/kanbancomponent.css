@@ -43,3 +43,9 @@ table.kanbancomponent div.card.red {
 table.kanbancomponent div.card.green {
 	background-color: lightgreen;
 }
+table.kanbancomponent div.card.blue {
+	background-color: lightblue;
+}
+table.kanbancomponent div.card.yellow {
+	background-color: yellow;
+}

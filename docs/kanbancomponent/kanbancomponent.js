@@ -61,16 +61,17 @@ function kanbancomponent_getCardsForList(listName) {
 
 //Called in create function to populate undefined orders and change their types to int
 function kanbancomponent_cleanOrders() {
+	var default_order = 9999;
 	for (var c=0;c<kanbancomponent_chart_obj.data.length;c++) {
 		if (typeof(kanbancomponent_chart_obj.data[c].$order)=="undefined") {
-			kanbancomponent_chart_obj.data[c].$order = 0;
+			kanbancomponent_chart_obj.data[c].$order = default_order;
 		} else {
 			kanbancomponent_chart_obj.data[c].$order = parseInt(kanbancomponent_chart_obj.data[c].$order);
 			if(isNaN(kanbancomponent_chart_obj.data[c].$order)) {
-				kanbancomponent_chart_obj.data[c].$order = 0;
+				kanbancomponent_chart_obj.data[c].$order = default_order;
 			} else {
 				if (typeof(kanbancomponent_chart_obj.data[c].$order)=="undefined") {
-					kanbancomponent_chart_obj.data[c].$order = 0;
+					kanbancomponent_chart_obj.data[c].$order = default_order;
 				};
 			};
 		};
