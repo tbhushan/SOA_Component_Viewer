@@ -22,7 +22,7 @@ function ic_soa_data_getSheetMetrics() {
 	ret["EDF"] = {
 		datarange: 'EDFList!A2:F',
 		sheet_name: 'EDFList',
-		css_tag: 'RED',
+		css_tag: 'red',
 		indexcol: 1,
 		toprow: 2,
 		namecol: 2,
@@ -34,7 +34,7 @@ function ic_soa_data_getSheetMetrics() {
 	ret["INT"] = {
 		datarange: 'Integration!A2:G',
 		sheet_name: 'Integration',
-		css_tag: 'GREEN',
+		css_tag: 'green',
 		indexcol: 1,
 		toprow: 2,
 		namecol: 4,
@@ -47,7 +47,7 @@ function ic_soa_data_getSheetMetrics() {
 	ret["PRES"] = {
 		datarange: 'Presentation!A2:H',
 		sheet_name: 'Presentation',
-		css_tag: 'BLUE',
+		css_tag: 'blue',
 		toprow: 2,
 		uidcol: 0,
 		indexcol: 1,
@@ -61,7 +61,7 @@ function ic_soa_data_getSheetMetrics() {
 	ret["POINT"] = {
 		datarange: 'Point2Point!A2:H',
 		sheet_name: 'Point2Point',
-		css_tag: 'YELLOW',
+		css_tag: 'yellow',
 		toprow: 2,
 		uidcol: 0,
 		indexcol: 1,
