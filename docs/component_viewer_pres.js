@@ -60,6 +60,6 @@ function getPRESHtml(uid) {
 	return ret;
 };
 function displayPRES(uid) {
-	document.getElementById('MAIN').innerHTML = getPRESHtml(uid);
-	document.getElementById('MAIN').style.display = 'inline';
+	$("#MAIN").html(getPRESHtml(uid));
+	$("#MAIN").css("display","inline");
 };

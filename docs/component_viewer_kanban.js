@@ -117,8 +117,8 @@ function getKANBANHtml() {
 };
 
 function displayKANBAN() {
-	document.getElementById('MAIN').innerHTML = getKANBANHtml();
-	document.getElementById('MAIN').style.display = 'inline';
+	$("#MAIN").html(getKANBANHtml());
+	$("#MAIN").css("display","inline");
 	kanbancomponent_init();
 	
 };

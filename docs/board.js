@@ -45,7 +45,7 @@ if (authResult && !authResult.error) {
   // clicking authorize button.
   board_writeAuth();
   if (!authResult.error) {
-	document.getElementById("myspan").innerHTML=authResult.error;
+	$("#myspan").text(authResult.error);
   };
 }
 }
@@ -53,12 +53,12 @@ if (authResult && !authResult.error) {
 var board_authBoxWritten = false;
 function board_writeAuth() {
 	if (board_authBoxWritten) return;
-	document.write("<div id=\"board_authorize-div\"><span id=\"board_auth_error\"></span><br><span>Authorize access to Google Sheets API</span><button id=\"board_authorize-button\" onclick=\"board_handleAuthClick(event)\">Authorize</button></div>");
+	$(document.body).append("<div id=\"board_authorize-div\"><span id=\"board_auth_error\"></span><br><span>Authorize access to Google Sheets API</span><button id=\"board_authorize-button\" onclick=\"board_handleAuthClick(event)\">Authorize</button></div>");
 };
 function board_hideAuthButton() {
-  var authorizeDiv = document.getElementById('board_authorize-div');
+  var authorizeDiv = $("#board_authorize-div");
   if (typeof(authorizeDiv)!="undefined") {
-	  if (null!=authorizeDiv) authorizeDiv.style.display = 'none';
+	  if (null!=authorizeDiv) authorizeDiv.css("display","none");
   };
 };
 	  

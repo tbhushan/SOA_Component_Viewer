@@ -52,6 +52,6 @@ function getINTHtml(uid) {
 	return ret;
 };
 function displayINT(uid) {
-	document.getElementById('MAIN').innerHTML = getINTHtml(uid);
-	document.getElementById('MAIN').style.display = 'inline';
+	$("#MAIN").html(getINTHtml(uid));
+	$("#MAIN").css("display","inline");
 };

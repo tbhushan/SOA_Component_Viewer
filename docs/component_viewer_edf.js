@@ -76,6 +76,6 @@ function getEDFHtml(uid) {
 	return ret;
 };
 function displayEDF(uid) {
-	document.getElementById('MAIN').innerHTML = getEDFHtml(uid);
-	document.getElementById('MAIN').style.display = 'inline';
+	$("#MAIN").html(getEDFHtml(uid));
+	$("#MAIN").css("display","inline");
 };

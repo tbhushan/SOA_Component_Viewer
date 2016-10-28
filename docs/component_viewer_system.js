@@ -163,6 +163,6 @@ function getSYSTEMHtml(uid) {
 	return ret;
 };
 function displaySYSTEM(uid) {
-	document.getElementById('MAIN').innerHTML = getSYSTEMHtml(uid);
-	document.getElementById('MAIN').style.display = 'inline';
+	$("#MAIN").html(getSYSTEMHtml(uid));
+	$("#MAIN").css("display","inline");
 };

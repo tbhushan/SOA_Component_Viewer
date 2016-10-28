@@ -53,6 +53,6 @@ function getNOPARAMHtml() {
 	return ret;
 };
 function displayNOPARAM() {
-	document.getElementById('MAIN').innerHTML = getNOPARAMHtml();
-	document.getElementById('MAIN').style.display = 'inline';
+	$("#MAIN").html(getNOPARAMHtml());
+	$("#MAIN").css("display","inline");
 };

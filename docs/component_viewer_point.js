@@ -83,6 +83,6 @@ function getPOINTHtml(uid) {
 	return ret;
 };
 function displayPOINT(uid) {
-	document.getElementById('MAIN').innerHTML = getPOINTHtml(uid);
-	document.getElementById('MAIN').style.display = 'inline';
+	$("#MAIN").html(getPOINTHtml(uid));
+	$("#MAIN").css("display","inline");
 };
