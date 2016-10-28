@@ -4,10 +4,23 @@ var board_CLIENT_ID = '1079972761471-j4b2l90p0rpkrkplf1j6avkue436c74p.apps.googl
 
 var board_SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
 
-var board_onAuthFn;
 
-function board_checkAuth(onAuthFn) {
-board_onAuthFn = onAuthFn;
+var board {
+	onAuthFn: undefined,
+	onErrorFn: undefined,
+};
+
+function board_error(msg) {
+	if (typeof(board.onErrorFn)=="undefined") {
+		board.onErrorFn(msg);
+	} else {
+		console.log("Board error no error function - " + msg);
+	};
+};
+
+function board_checkAuth(onAuthFn,onErrorFn) {
+board.onAuthFn = onAuthFn;
+board.onErrorFn = onErrorFn;
 gapi.auth.authorize(
   {
 	'client_id': board_CLIENT_ID,
@@ -24,18 +37,30 @@ gapi.auth.authorize(
 function board_handleAuthResult(authResult) {
 if (authResult && !authResult.error) {
   // Hide auth UI, then load client library.
+  board_hideAuthButton();
+  var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
+  gapi.client.load(discoveryUrl).then(board.onAuthFn);
+} else {
+  // Show auth UI, allowing the user to initiate authorization by
+  // clicking authorize button.
+  board_writeAuth();
+  if (!authResult.error) {
+	document.getElementById("myspan").innerHTML=authResult.error;
+  };
+}
+}
+
+var board_authBoxWritten = false;
+function board_writeAuth() {
+	if (board_authBoxWritten) return;
+	document.write("<div id=\"board_authorize-div\"><span id=\"board_auth_error\"></span><br><span>Authorize access to Google Sheets API</span><button id=\"board_authorize-button\" onclick=\"board_handleAuthClick(event)\">Authorize</button></div>");
+};
+function board_hideAuthButton() {
   var authorizeDiv = document.getElementById('board_authorize-div');
   if (typeof(authorizeDiv)!="undefined") {
 	  if (null!=authorizeDiv) authorizeDiv.style.display = 'none';
   };
-  var discoveryUrl = 'https://sheets.googleapis.com/$discovery/rest?version=v4';
-  gapi.client.load(discoveryUrl).then(board_onAuthFn);
-} else {
-  // Show auth UI, allowing the user to initiate authorization by
-  // clicking authorize button.
-  document.write("<div id=\"board_authorize-div\"><span>Authorize access to Google Sheets API</span><button id=\"board_authorize-button\" onclick=\"board_handleAuthClick(event)\">Authorize</button></div>");
-}
-}
+};
 	  
 /*
 Get data from a spreadsheet
@@ -47,8 +72,7 @@ function board_getDataRangesFromSheet(spreadsheetId,ranges,respfn) {
 		ranges: ranges,
 	}).then(function(response) {
 		if (response.status!=200) {
-			//TODO Caller supply error handler
-			console.log("ERROR");
+			board_error("ERROR A - response " + response.status);
 			return;
 		};
 		respfn(response.result.valueRanges);
@@ -94,8 +118,7 @@ function board_execute_saveBatch(spreadsheetId) {
 		resource: batchUpdateData,
 	}).then(function(response) {
 		if (response.status!=200) {
-			//TODO Caller supply error handler
-			console.log("ERROR");
+			board_error("ERROR Saving - response " + response.status);
 			return;
 		};
 		//No Confirmation call
