@@ -105,10 +105,9 @@ function getKANBANHtml() {
 	loadDataIntoKanbanComponent();
 
 	var ret = "";
-	ret += '<table border=0 height="100%" width="100%"><tr><td>';
+	ret += '<table><tr><td>';
 	ret += GetMenu();
-	ret += '</td></tr><tr height="100%"><td>';
-	
+	ret += '</td></tr><tr class="main"><td>';
 	
 	ret += kanbancomponent_create(CB_onAfterDrop,CB_item_dbl_click);
 	

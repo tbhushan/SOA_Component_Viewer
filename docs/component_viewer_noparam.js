@@ -2,10 +2,12 @@
 
 function getNOPARAMHtml() {
 	var ret = "";
-	ret += GetMenu();
 	
-	ret += "<h1>Component Viewer</h1>";
 	ret += "<table><tr>";
+	ret += "<td colspan=\"5\">";
+	ret += GetMenu();
+	ret += "<h1>Component Viewer</h1>";
+	ret += "</td></tr><tr class=\"main\">";
 
 	ret += "<td valign=\"top\"><h2>Systems</h1>";
 	ret += "<ul>";

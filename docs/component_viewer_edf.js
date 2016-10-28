@@ -24,7 +24,8 @@ function getEDFHtml(uid) {
 
 	var source_system_object = ic_soa_data_getSystemFromName(curEDF.source_system,dataObjects);
 	
-	ret += '<table border=0 width="100%" height="100%"><tr><td colspan=2>'
+	ret += '<table>';
+	ret += '<tr><td colspan=2>'
 	ret += GetMenu();
 	ret += "<h1>EDF: " + curEDF.name + " (" + curEDF.status + ")</h1>";
 	ret += "<svg class=\"ic_soa_svg\" style=\"width: 1300; height: " + svg_height + ";\">";
@@ -48,24 +49,29 @@ function getEDFHtml(uid) {
 	}
 	
 	ret += '</svg>';
-	ret += '</tr></td>';
+	ret += '</td></tr>';
 	
 	var w = $( document ).width() - 400;
 	
-	ret += '<tr><td width="' + w + 'px" height="100%">';
+	ret += '<tr class="main">';
+	ret += '<td width="' + w + 'px">';
 	ret += '<iframe src="' + confluence_doc_url + '" scrolling="yes" height="100%" width="' + w + 'px" >';
 	ret += '</iframe>';
-	ret += '</td><td valign="top" align="left">';
+	ret += '</td>';
+	ret += '<td valign="top" align="left">';
 	
 	ret += '<table border=1>';
-	ret += '<tr><th>EDF Name:</th><td>' + curEDF.name + '</td>';
-	ret += '<tr><th>Development Status:</th><td>' + curEDF.status + '</td>';
-	ret += '<tr><th>Source System:</th><td>' + curEDF.source_system + '</td>';
-	ret += '<tr><th>Confluence Documentation:</th><td><a href="' + confluence_doc_url + '">Confluence</a></td>';
-	ret += '<tr><th>Tags:</th><td>' + curEDF.tags + '</td>';
+	ret += '<tr><th>EDF Name:</th><td>' + curEDF.name + '</td></tr>';
+	ret += '<tr><th>Development Status:</th><td>' + curEDF.status + '</td></tr>';
+	ret += '<tr><th>Source System:</th><td>' + curEDF.source_system + '</td></tr>';
+	ret += '<tr><th>Confluence Documentation:</th><td><a href="' + confluence_doc_url + '">Confluence</a></td></tr>';
+	ret += '<tr><th>Tags:</th><td>' + curEDF.tags + '</td></tr>';
 	ret += '</table>';
 	
-	ret += "</td></tr></table>";
+
+	ret += "</td>";
+
+	ret += "</tr></table>";
 
 	return ret;
 };
