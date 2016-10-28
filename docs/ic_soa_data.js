@@ -132,7 +132,7 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 	var range = googleAPIResult[0 + numPre]; //0 = EDF
 	var cur_sheet_metrics = sheetMetrics[sheetList[0]];
 	if (range.values.length > 0) {
-		for (i = 0; i < range.values.length; i++) {
+		for (var i = 0; i < range.values.length; i++) {
 			var row = range.values[i];
 			var source_system = row[cur_sheet_metrics.source_sys_col];
 			EDFkeys.push(row[cur_sheet_metrics.uidcol]);
@@ -162,7 +162,7 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 	range = googleAPIResult[1 + numPre]; //0 = EDF
 	cur_sheet_metrics = sheetMetrics[sheetList[1]];
 	if (range.values.length > 0) {
-		for (i = 0; i < range.values.length; i++) {
+		for (var i = 0; i < range.values.length; i++) {
 			var row = range.values[i];
 			var target_system = row[cur_sheet_metrics.target_sys_col];
 			INTkeys.push(row[cur_sheet_metrics.uidcol]);
@@ -206,7 +206,7 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 				name: row[cur_sheet_metrics.namecol],
 				status: row[cur_sheet_metrics.listcol],
 				tags: row[cur_sheet_metrics.tagscol],
-				sheet_row: (i+cur_sheet_metrics.toprow),
+				sheet_row: (cur_range+cur_sheet_metrics.toprow),
 				order: row[cur_sheet_metrics.indexcol],
 				provider_system: provider_system,
 				rawname: row[cur_sheet_metrics.rawnamecol],
@@ -241,7 +241,7 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 				name: row[cur_sheet_metrics.namecol],
 				status: row[cur_sheet_metrics.listcol],
 				tags: row[cur_sheet_metrics.tagscol],
-				sheet_row: (i+cur_sheet_metrics.toprow),
+				sheet_row: (cur_range+cur_sheet_metrics.toprow),
 				order: row[cur_sheet_metrics.indexcol],
 				provider_systems: provider_syss,
 				rawname: row[cur_sheet_metrics.rawnamecol],
