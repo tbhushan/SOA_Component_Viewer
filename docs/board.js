@@ -5,7 +5,7 @@ var board_CLIENT_ID = '1079972761471-j4b2l90p0rpkrkplf1j6avkue436c74p.apps.googl
 var board_SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
 
 
-var board {
+var board = {
 	onAuthFn: undefined,
 	onErrorFn: undefined,
 };
