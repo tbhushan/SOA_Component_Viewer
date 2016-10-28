@@ -36,7 +36,7 @@ function knabancomponent_getcardHTML(data_row) {
 		html += '<hr><div class="tag">';
 		html += data_row.obj.tags + '</div>';
 	};
-	//html += ' (' + obj.$order + ')'; //DEBUG LINE TO DISPLAY ORDER
+	//html += ' (ORDER=' + data_row.obj.$order + ')'; //DEBUG LINE TO DISPLAY ORDER
 	html += '</div>';
 	return html;
 };
@@ -51,27 +51,40 @@ function kanbancomponent_getCardsForList(listName) {
 	};
 	
 	res.sort(function(a,b){
-		var aa=0;
-		var bb=0;
-		if (typeof(aa)!="undefined") aa = parseInt(a.obj.$order);
-		if (typeof(bb)!="undefined") bb = parseInt(b.obj.$order);
-		//if (typeof(aa)=="undefined") aa = 0;
-		//if (typeof(bb)=="undefined") bb = 0;
-		if (a.$order=="") aa = 0;
-		if (b.$order=="") bb = 0;
-		if (aa<bb) return -1;
-		if (aa>bb) return 1;
+		if (a.obj.$order<b.obj.$order) return -1;
+		if (a.obj.$order>b.obj.$order) return 1;
 		return 0;
 	});
 	
 	return res;
 };
 
+//Called in create function to populate undefined orders and change their types to int
+function kanbancomponent_cleanOrders() {
+	for (var c=0;c<kanbancomponent_chart_obj.data.length;c++) {
+		if (typeof(kanbancomponent_chart_obj.data[c].$order)=="undefined") {
+			kanbancomponent_chart_obj.data[c].$order = 0;
+		} else {
+			kanbancomponent_chart_obj.data[c].$order = parseInt(kanbancomponent_chart_obj.data[c].$order);
+			if(isNaN(kanbancomponent_chart_obj.data[c].$order)) {
+				kanbancomponent_chart_obj.data[c].$order = 0;
+			} else {
+				if (typeof(kanbancomponent_chart_obj.data[c].$order)=="undefined") {
+					kanbancomponent_chart_obj.data[c].$order = 0;
+				};
+			};
+		};
+	};
+}
+
 //Main function called to create kanban component. output is HTML
 // limited to one component per page
 function kanbancomponent_create(onAfterDrop, onListItemDblClick) {
 	var html = "";
+	kanbancomponent_chart_obj.onAfterDrop = onAfterDrop;
+	kanbancomponent_chart_obj.onListItemDblClick = onListItemDblClick;
 	
+	kanbancomponent_cleanOrders();
 	
 	html += '<table class="kanbancomponent">';
 	html += '<tr class="headrow">';
@@ -119,12 +132,28 @@ function kanbancomponent_init() {
 			var orig_status = $($(this)[0]).data("status");
 			var new_Status = column_being_droped_into.data("status");
 
+			var changed = false;
+			if (orig_status!=new_Status) {
+				changed = true;
+				//Change data item status
+				data_item_being_dropped.status = new_Status;
+			};
+			
+			//Go through new status column and set the order property of each item
+			var cards_in_new_list = column_being_droped_into.find("div.card");
+			for (var i=0;i<cards_in_new_list.length;i++) {
+				var data_item = kanbancomponent_chart_obj.data[$(cards_in_new_list[i]).data("data_pos")];
+				if (data_item.$order!=i) {
+					changed = true;
+					data_item.$order=i;
+					//console.log(data_item.text + " " + data_item.$order);
+				};
+			};
 
-			console.log("TODO CALLBACK UPDATE LIST Move " + data_item_being_dropped.text + " from " + orig_status + " to " + new_Status);
-
-			//TODO Change data item status
-			//TODO Go through new status column and set the order property of each item
-
+			if (changed) {
+				kanbancomponent_chart_obj.onAfterDrop(new_Status,data_item_being_dropped_pos,kanbancomponent_chart_obj.data);
+			};
+			
 		},
 		connectWith: "table.kanbancomponent tr.mainrow td"
 	});

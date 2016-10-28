@@ -72,7 +72,7 @@ function getKANBANHtml() {
 	ret += '</td></tr><tr height="100%"><td>';
 	
 	
-	ret += kanbancomponent_create(null,null);
+	ret += kanbancomponent_create(CB_onAfterDrop,null);
 	
 	ret += '</td></tr></table>';
 	
@@ -83,5 +83,45 @@ function displayKANBAN() {
 	document.getElementById('MAIN').innerHTML = getKANBANHtml();
 	document.getElementById('MAIN').style.display = 'inline';
 	kanbancomponent_init();
+	
+};
+
+//Callback from kanban
+function CB_onAfterDrop(new_status,item_dropped_array_pos,data) {
+	//Save the entire list - required as orders will be changed
+	board_prepare_saveBatch();
+	for (var c=0;c<data.length;c++) {
+		var row = data[c];
+		if (row.status==new_status) {
+			var sheet_data_item = sheet_data[ic_soa_data_getSheetList()[row.sheet_data_item]];
+			board_append_saveBatch({
+				"range": sheet_data_item.sheet_name + "!" + board_columnToLetter(sheet_data_item.listcol) + row.sheet_row,
+				"majorDimension": "ROWS",
+				"values": [
+					[row.status]
+				],
+			});
+			board_append_saveBatch({
+				"range": sheet_data_item.sheet_name + "!" + board_columnToLetter(sheet_data_item.indexcol) + row.sheet_row,
+				"majorDimension": "ROWS",
+				"values": [
+					[row.$order]
+				],
+			});
+			/*Tags are not editable
+			var tt = row.tags;
+			if (typeof(tt)=="undefined") tt = "";
+			board_append_saveBatch({
+				"range": sheet_data_item.sheet_name + "!" + board_columnToLetter(sheet_data_item.tagscol) + row.sheet_row,
+				"majorDimension": "ROWS",
+				"values": [
+					[row.tt]
+				],
+			});*/
+
+		};
+	};
+	
+	board_execute_saveBatch(spreadsheetId);
 	
 };
