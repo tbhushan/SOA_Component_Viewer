@@ -152,14 +152,23 @@ function kanbancomponent_init() {
 			};
 
 			if (changed) {
-				kanbancomponent_chart_obj.onAfterDrop(new_Status,data_item_being_dropped_pos,kanbancomponent_chart_obj.data);
+				if (typeof(kanbancomponent_chart_obj.onAfterDrop)!="undefined") {
+					kanbancomponent_chart_obj.onAfterDrop(new_Status,data_item_being_dropped_pos,kanbancomponent_chart_obj.data);
+				}
 			};
 			
 		},
 		connectWith: "table.kanbancomponent tr.mainrow td"
 	});
-	//$("table.kanbancomponent .card").disableSelection();
 
+	$(document).on('dblclick.kanbancomponent', "table.kanbancomponent tr.mainrow td div.card", function (event) {
+		if (typeof(kanbancomponent_chart_obj.onListItemDblClick)!="undefined") {
+			kanbancomponent_chart_obj.onListItemDblClick($($(this)[0]).data("data_pos"),kanbancomponent_chart_obj.data);
+		};
+		event.preventDefault();
+	}
+	);
+	
 };
 
 

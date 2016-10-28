@@ -106,7 +106,7 @@ function getKANBANHtml() {
 	ret += '</td></tr><tr height="100%"><td>';
 	
 	
-	ret += kanbancomponent_create(CB_onAfterDrop,null);
+	ret += kanbancomponent_create(CB_onAfterDrop,CB_item_dbl_click);
 	
 	ret += '</td></tr></table>';
 	
@@ -121,6 +121,11 @@ function displayKANBAN() {
 };
 
 //Callback from kanban
+function CB_item_dbl_click(item_array_pos, data) {
+	console.log("TODO dblclick ");
+	console.log(data[item_array_pos]);
+};
+
 function CB_onAfterDrop(new_status,item_dropped_array_pos,data) {
 	//Save the entire list - required as orders will be changed
 	board_prepare_saveBatch();
