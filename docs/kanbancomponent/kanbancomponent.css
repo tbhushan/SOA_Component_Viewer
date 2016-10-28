@@ -27,8 +27,8 @@ table.kanbancomponent td.ui-state-active {
 
 table.kanbancomponent div.card {
     border: 1px solid black;
-    padding: 10px;
-    margin: 5px;	
+    padding: 5px;
+    margin: 4px;	
 }
 table.kanbancomponent div.card  div.tag{
 	text-align:right;
