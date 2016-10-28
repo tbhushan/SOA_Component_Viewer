@@ -34,7 +34,8 @@ function loadDataIntoKanbanComponent() {
 						sheet_row: cur_edf.sheet_row,
 						sheet_data_item: cur_sheet,
 						$order: cur_edf.order,
-						view_link: "http://localhost:8000/component_viewer.html?mode=EDF&name=" + cur_edf.name
+						view_fn: displayEDF,
+						obj: cur_edf,
 					}
 				);
 			};
@@ -51,7 +52,8 @@ function loadDataIntoKanbanComponent() {
 						sheet_row: cur_int.sheet_row,
 						sheet_data_item: cur_sheet,
 						$order: cur_int.order,
-						view_link: undefined //"http://localhost:8000/component_viewer.html?mode=INT&name=" + row[cur_sheet_data.namecol]
+						view_fn: displayINT,
+						obj: cur_int,
 					}
 				);
 			};
@@ -68,7 +70,8 @@ function loadDataIntoKanbanComponent() {
 						sheet_row: cur_pres.sheet_row,
 						sheet_data_item: cur_sheet,
 						$order: cur_pres.order,
-						view_link: undefined
+						view_fn: displayPRES,
+						obj: cur_pres,
 					}
 				);
 			};			
@@ -85,7 +88,8 @@ function loadDataIntoKanbanComponent() {
 						sheet_row: cur_point.sheet_row,
 						sheet_data_item: cur_sheet,
 						$order: cur_point.order,
-						view_link: undefined
+						view_fn: displayPOINT,
+						obj: cur_point,
 					}
 				);
 			};			
@@ -122,8 +126,7 @@ function displayKANBAN() {
 
 //Callback from kanban
 function CB_item_dbl_click(item_array_pos, data) {
-	console.log("TODO dblclick ");
-	console.log(data[item_array_pos]);
+	data[item_array_pos].view_fn(data[item_array_pos].obj.uid)
 };
 
 function CB_onAfterDrop(new_status,item_dropped_array_pos,data) {
@@ -158,7 +161,11 @@ function CB_onAfterDrop(new_status,item_dropped_array_pos,data) {
 				],
 			});*/
 
+			//Copy changed data into local object
+			row.obj.status=row.status;
+			row.obj.$order=row.$order;
 		};
+		
 	};
 	
 	board_execute_saveBatch(spreadsheetId);
