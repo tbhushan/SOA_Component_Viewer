@@ -2,11 +2,21 @@
 
 function getINTHtml(uid) {
 	var ret = "";
+
+	ret += '<table>';
+	ret += '<tr>';
+	ret += '<td>';
+
 	var curINT = dataObjects.INTs[uid];
 	if (typeof(curINT)=="undefined") {
 		console.log("ERROR no Integration with uid " + uid);
 		return;
 	}
+
+	ret += '</td>';
+	ret += '</tr>';
+	ret += '<tr class="main">';
+	ret += '<td valign="top">';
 
 	var edf_pos = {x:180, y:50};
 	var int_pos = {x:700, y:50};
@@ -34,6 +44,11 @@ function getINTHtml(uid) {
 	ret += ic_soa_svg_drawArrow( ic_soa_svg_EDF_conectorPointLocation(edf_pos,"right"),ic_soa_svg_Integration_conectorPointLocation(int_pos,"left"));
 	
 	ret += "</svg>";
+
+	ret += '</td>';
+	ret += '</tr>';
+	ret += '</table>';
+
 	return ret;
 };
 function displayINT(uid) {

@@ -2,11 +2,22 @@
 
 function getPOINTHtml(uid) {
 	var ret = "";
+
+	ret += '<table>';
+	ret += '<tr>';
+	ret += '<td>';
+
 	var curPOINT = dataObjects.POINTs[uid];
 	if (typeof(curPOINT)=="undefined") {
 		console.log("ERROR no Point 2 Point Integration with uid " + uid);
 		return;
 	}
+
+	ret += '</td>';
+	ret += '</tr>';
+	ret += '<tr class="main">';
+	ret += '<td valign="top">';
+
 	var vert_pitch = 100; //Vertical distance between rows
 
 	var provider_systems_to_draw = curPOINT.provider_systems;
@@ -64,6 +75,11 @@ function getPOINTHtml(uid) {
 	}
 
 	ret += "</svg>";
+
+	ret += '</td>';
+	ret += '</tr>';
+	ret += '</table>';
+
 	return ret;
 };
 function displayPOINT(uid) {

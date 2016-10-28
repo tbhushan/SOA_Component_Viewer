@@ -2,9 +2,18 @@
 	
 function getSYSTEMHtml(uid) {
 	var ret = "";
+
+	ret += '<table>';
+	ret += '<tr>';
+	ret += '<td>';
+
 	var system_object = dataObjects.SYSTEMs[uid];
 	ret += GetMenu();
 
+	ret += '</td>';
+	ret += '</tr>';
+	ret += '<tr class="main">';
+	ret += '<td valign="top">';
 
 	var ints_to_draw = [];
 	for (var cur_do = 0; cur_do < dataObjects.INTkeys.length; cur_do++) {
@@ -145,7 +154,12 @@ function getSYSTEMHtml(uid) {
 	}
 
 	
-	ret += "</svg>";		
+	ret += "</svg>";
+
+	ret += '</td>';
+	ret += '</tr>';
+	ret += '</table>';
+		
 	return ret;
 };
 function displaySYSTEM(uid) {

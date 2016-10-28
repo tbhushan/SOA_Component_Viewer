@@ -2,6 +2,11 @@
 
 function getPRESHtml(uid) {
 	var ret = "";
+
+	ret += '<table>';
+	ret += '<tr>';
+	ret += '<td>';
+
 	var curPRES = dataObjects.PRESs[uid];
 	if (typeof(curPRES)=="undefined") {
 		console.log("ERROR no Presentation Service with uid " + uid);
@@ -14,6 +19,11 @@ function getPRESHtml(uid) {
 
 
 	ret += GetMenu();
+
+	ret += '</td>';
+	ret += '</tr>';
+	ret += '<tr class="main">';
+	ret += '<td valign="top">';
 	
 	ret += "<h1>Presentation Service: " + curPRES.name + " (" + curPRES.status + ")</h1>";
 
@@ -42,6 +52,10 @@ function getPRESHtml(uid) {
 
 
 	ret += "</svg>";
+
+	ret += '</td>';
+	ret += '</tr>';
+	ret += '</table>';
 
 	return ret;
 };
