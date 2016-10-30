@@ -125,5 +125,55 @@ function board_execute_saveBatch(spreadsheetId) {
 	})	
 };
 
+/*
+Function to check what access level the current user has for a particular sheet
+return values:
+ - NONE
+ - READONLY_NOWRITETEST
+ - READONLY
+ - READWRITE
+*/
+function board_check_sheet_accessLevel(sheetID,cbfunction) {
 
+	gapi.client.sheets.spreadsheets.get({
+		spreadsheetId: spreadsheetId,
+		includeGridData: false,
+		ranges: "A1",
+		fields:"sheets"
+	}).then(function(response) {
+		if (response.status!=200) {
+			cbfunction("NONE");
+			return;
+		};
+		if (0==response.result.sheets.length) {
+			cbfunction("READONLY_NOWRITETEST");
+			return;
+		};
+		var sheetName = response.result.sheets[0].properties.title;
+		var sheetA1Value = response.result.sheets[0].data[0].rowData[0].values[0].effectiveValue.stringValue;
+		var targetRange = sheetName + "!A1";
+		//console.log(sheetA1Value);
+
+		var resource = {
+			"values": [[sheetA1Value]],
+		};
+
+
+		gapi.client.sheets.spreadsheets.values.update({
+			spreadsheetId: spreadsheetId,
+			"range": targetRange,
+			"valueInputOption": "RAW",
+			resource:resource
+		}).then(function(response2) {
+			if (response2.status!=200) {
+				cbfunction("READONLY");
+				return;
+			};
+			//console.log(response2);
+			cbfunction("READWRITE");
+			return;
+		});
+	});
+
+};
 

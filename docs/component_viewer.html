@@ -38,6 +38,10 @@
 	var dataObjects={};
 	var statusList=[];
 
+	//variable to hold access level to spradsheet
+	//will hold NONE for error, "READONLY" or "READWRITE"
+	var accessLevel="NONE";
+
 	
 	var QueryString = function () {
 	  // This function is anonymous, is executed immediately and 
@@ -64,7 +68,13 @@
 
 	function GetMenu() {
 		var ret = "";
-		ret += '<p><a href="index.html">Index</a> <a href="javascript:displayNOPARAM()">Menu</a> <a href="javascript:displayKANBAN()">Board</a></p>';
+		ret += '<p><a href="index.html">Index</a> <a href="javascript:displayNOPARAM()">Menu</a> <a href="javascript:displayKANBAN()">Board</a>';
+		if (accessLevel=="READWRITE") {
+			ret += " (can write)";
+		} else {
+			//ret += " Read only";
+		};
+		ret += '</p>';
 		ret += '<div id="MAIN" style="display: none">';
 		ret += '<h1>Viewing MAIN</h1>';
 		ret += '</div>';
@@ -97,46 +107,58 @@
 		}
 		
 	};
-	
-	function LoadDoc2() {
-		
-		//Load Data
-		ranges=[];
-		ranges.push(ic_soa_data_getListsRange());
-		var sm = ic_soa_data_getSheetList();
-		for (i = 0; i < sm.length; i++) {
-			ranges.push(sheet_data[sm[i]].datarange);
-		}
-		board_getDataRangesFromSheet(spreadsheetId,ranges,function (result) {
-			dataObjects = ic_soa_data_getDataObject(sm,sheet_data,result,1);
-			if (typeof(dataObjects.EDFkeys)=="undefined") {
-				console.log("Error loading data objects");
-				alert("ERROR");
-				return;
-			};
-			LoadStatusList(result);
 
-			//console.log(dataObjects);
-			if (QueryString.mode=="EDF") {
-				if (typeof(QueryString.name)=="undefined") {
-					displayNOPARAM();
-				} else {
-					var edfobj = ic_soa_data_getEDFFromName(QueryString.name, dataObjects);
-					if (typeof(edfobj)=="undefined") {
-					} else {
-						displayEDF(edfobj.uid);
-					};
+	function LoadDoc2() {
+		//Auth has been checked
+		board_check_sheet_accessLevel(spreadsheetId,LoadDoc3);
+	}
+	
+	function LoadDoc3(accessLevelRet) {
+		if (accessLevelRet=="NONE") {
+			accessLevel="NONE";
+			$("#MAIN").html("<p>ERROR - No access to data spreadsheet - you need to request access</p>");
+			$("#MAIN").css("display","inline");
+		} else {
+			accessLevel="READONLY";
+			if (accessLevelRet=="READWRITE") accessLevel="READWRITE";
+
+			//Load Data
+			ranges=[];
+			ranges.push(ic_soa_data_getListsRange());
+			var sm = ic_soa_data_getSheetList();
+			for (i = 0; i < sm.length; i++) {
+				ranges.push(sheet_data[sm[i]].datarange);
+			}
+			board_getDataRangesFromSheet(spreadsheetId,ranges,function (result) {
+				dataObjects = ic_soa_data_getDataObject(sm,sheet_data,result,1);
+				if (typeof(dataObjects.EDFkeys)=="undefined") {
+					console.log("Error loading data objects");
+					alert("ERROR");
+					return;
 				};
-			} else if (QueryString.mode=="SYSTEM") {
-				displaySYSTEM("SYSTEM");
-			} else if (QueryString.mode=="INT") {
-				displayINT("INT");
-			} else {
-				displayNOPARAM();
-			};
+				LoadStatusList(result);
+
+				//console.log(dataObjects);
+				if (QueryString.mode=="EDF") {
+					if (typeof(QueryString.name)=="undefined") {
+						displayNOPARAM();
+					} else {
+						var edfobj = ic_soa_data_getEDFFromName(QueryString.name, dataObjects);
+						if (typeof(edfobj)=="undefined") {
+						} else {
+							displayEDF(edfobj.uid);
+						};
+					};
+				} else if (QueryString.mode=="SYSTEM") {
+					displaySYSTEM("SYSTEM");
+				} else if (QueryString.mode=="INT") {
+					displayINT("INT");
+				} else {
+					displayNOPARAM();
+				};
 			
-		});
-		
+			});
+		}; //accessLevel IF
 	
 	};
 	
