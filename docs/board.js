@@ -1,5 +1,8 @@
 "use strict";
-	
+
+//https://developers.google.com/api-client-library/javascript/reference/referencedocs
+
+
 var board_CLIENT_ID = '1079972761471-j4b2l90p0rpkrkplf1j6avkue436c74p.apps.googleusercontent.com';
 
 var board_SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
@@ -134,13 +137,15 @@ return values:
  - READWRITE
 */
 function board_check_sheet_accessLevel(sheetID,cbfunction) {
+console.log("board_check_sheet_accessLevel start");
 
 	gapi.client.sheets.spreadsheets.get({
-		spreadsheetId: spreadsheetId,
+		spreadsheetId: sheetID,
 		includeGridData: false,
 		ranges: "A1",
 		fields:"sheets"
 	}).then(function(response) {
+		console.log("got response");
 		if (response.status!=200) {
 			cbfunction("NONE");
 			return;
@@ -160,7 +165,7 @@ function board_check_sheet_accessLevel(sheetID,cbfunction) {
 
 
 		gapi.client.sheets.spreadsheets.values.update({
-			spreadsheetId: spreadsheetId,
+			spreadsheetId: sheetID,
 			"range": targetRange,
 			"valueInputOption": "RAW",
 			resource:resource
@@ -172,8 +177,15 @@ function board_check_sheet_accessLevel(sheetID,cbfunction) {
 			//console.log(response2);
 			cbfunction("READWRITE");
 			return;
+		}, function (reason) {
+			cbfunction("READONLY");
 		});
+	}, function (reason) {
+		console.log(reason);
+		cbfunction("NONE");
 	});
+
+
 
 };
 
