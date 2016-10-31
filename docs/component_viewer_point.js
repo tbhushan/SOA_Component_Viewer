@@ -37,7 +37,7 @@ function getPOINTHtml(uid) {
 
 	var point_pos = {x:500, y:(svg_height/2)};
 
-	ret += "<svg class=\"ic_soa_svg\" style=\"width: 1300; height: " + svg_height + ";\">";
+	ret += "<svg class=\"ic_soa_svg\" style=\"width: 1300px; height: " + svg_height + "px;\">";
 	ret += ic_soa_svg_getMarkers();
 
 	ret += ic_soa_svg_drawPoint(curPOINT.name,point_pos);

@@ -75,7 +75,7 @@ function getSYSTEMHtml(uid) {
 	
 	var system_pos = {x:600, y:(svg_height/2)}
 
-	ret += "<svg class=\"ic_soa_svg\" style=\"width: 1300; height: " + svg_height + ";\">";
+	ret += "<svg class=\"ic_soa_svg\" style=\"width: 1300px; height: " + svg_height + "px;\">";
 	ret += ic_soa_svg_getMarkers();
 	ret += ic_soa_svg_drawSystem(system_object.name,system_pos);
 

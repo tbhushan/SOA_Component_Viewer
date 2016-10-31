@@ -28,7 +28,7 @@ function getEDFHtml(uid) {
 	ret += '<tr><td colspan=2>'
 	ret += GetMenu();
 	ret += "<h1>EDF: " + curEDF.name + " (" + curEDF.status + ")</h1>";
-	ret += "<svg class=\"ic_soa_svg\" style=\"width: 1300; height: " + svg_height + ";\">";
+	ret += "<svg class=\"ic_soa_svg\" style=\"width: 1300px; height: " + svg_height + "px;\">";
 	ret += ic_soa_svg_getMarkers();
 	ret += ic_soa_svg_drawSystem(curEDF.source_system,source_sys_pos,"javascript:displaySYSTEM('" + source_system_object.uid + "')");
 	ret += ic_soa_svg_drawEDF(curEDF.name,edf_pos);

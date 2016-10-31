@@ -31,7 +31,7 @@ function getPRESHtml(uid) {
 	var pres_pos = {x:500, y:(svg_height/2)};
 	var provider_system_object = ic_soa_data_getSystemFromName(curPRES.provider_system, dataObjects);
 
-	ret += "<svg class=\"ic_soa_svg\" style=\"width: 1300; height: " + svg_height + ";\">";
+	ret += "<svg class=\"ic_soa_svg\" style=\"width: 1300px; height: " + svg_height + "px;\">";
 	ret += ic_soa_svg_getMarkers();
 
 	ret += ic_soa_svg_drawSystem(curPRES.provider_system,provider_system_pos,"javascript:displaySYSTEM('" + provider_system_object.uid + "')");

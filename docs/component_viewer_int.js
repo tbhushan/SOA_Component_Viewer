@@ -24,7 +24,7 @@ function getINTHtml(uid) {
 	ret += GetMenu();
 	
 	ret += "<h1>Integration: " + curINT.name + " (" + curINT.status + ")</h1>";
-	ret += "<svg class=\"ic_soa_svg\" style=\"width: 1300; height: 100;\">";
+	ret += "<svg class=\"ic_soa_svg\" style=\"width: 1300px; height: 100px;\">";
 	ret += ic_soa_svg_getMarkers();
 	
 	var src_edf_obj = ic_soa_data_getEDFFromName(curINT.source_edf, dataObjects);
