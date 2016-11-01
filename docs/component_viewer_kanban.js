@@ -126,7 +126,7 @@ function displayKANBAN() {
 
 //Callback from kanban
 function CB_item_dbl_click(item_array_pos, data) {
-	data[item_array_pos].view_fn(data[item_array_pos].obj.uid)
+	data[item_array_pos].view_fn(data[item_array_pos].uid)
 };
 
 function CB_onAfterDrop(new_status,item_dropped_array_pos,data) {
@@ -162,8 +162,8 @@ function CB_onAfterDrop(new_status,item_dropped_array_pos,data) {
 			});*/
 
 			//Copy changed data into local object
-			row.obj.status=row.status;
-			row.obj.$order=row.$order;
+			row.status=row.status;
+			row.$order=row.$order;
 		};
 		
 	};

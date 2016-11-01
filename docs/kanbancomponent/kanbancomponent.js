@@ -153,9 +153,9 @@ function kanbancomponent_buildtaglist_tag(comma_seperated_tag_list) {
 //kanbancomponent_chart_obj.tag_list
 function kanbancomponent_buildtaglist() {
 	for (var i=0; i<kanbancomponent_chart_obj.data.length; i++) {
-		if (typeof(kanbancomponent_chart_obj.data[i].obj.tags)!="undefined") {
-			if (kanbancomponent_chart_obj.data[i].obj.tags.trim()!="") {
-				kanbancomponent_buildtaglist_tag(kanbancomponent_chart_obj.data[i].obj.tags);
+		if (typeof(kanbancomponent_chart_obj.data[i].tags)!="undefined") {
+			if (kanbancomponent_chart_obj.data[i].tags.trim()!="") {
+				kanbancomponent_buildtaglist_tag(kanbancomponent_chart_obj.data[i].tags);
 			};
 		};
 	};
@@ -246,7 +246,10 @@ function kanbancomponent_init(readonly) {
 							console.log(data_item_pos);
 							console.log(data_item);
 							console.log($("div.card[data-data_pos=" + data_item_pos + "] div.tag"));
-							$("div.card[data-data_pos=" + data_item_pos + "] div.tag").html(knabancomponent_getcardHTML_tagdivcontents(data_item));
+							//TODO UPDATE
+							var card_html = knabancomponent_getcardHTML_tagdivcontents(data_item);
+							console.log(card_html);
+							$("div.card[data-data_pos=" + data_item_pos + "] div.tag").html(card_html);
 						}
 					},
 					{
