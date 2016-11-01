@@ -30,26 +30,36 @@ function kanbancomponent_appenddata(data_to_append) {
 	Array.prototype.push.apply(kanbancomponent_chart_obj.data,data_to_append);
 };
 
+function knabancomponent_getcardHTML_tagdivcontents(data_row) {
+	if (kanbancomponent_chart_obj.readonly) {
+		if (typeof(data_row.obj.tags)=="undefined") {
+			return "";
+		};
+		return data_row.obj.tags;
+	};
+	var html = "";
+
+	if (typeof(data_row.obj.tags)!="undefined") {
+		html += data_row.obj.tags;
+	};
+
+	html += '<span class="ui-icon ui-icon-pencil" id="kanbancomponent_edittag"></span>';
+	return html;
+};
+
 function knabancomponent_getcardHTML(data_row) {
 	var html = "";
 	html += '<div class="card ' + data_row.obj.$css + '" data-data_pos="' + data_row.data_pos + '">';
 	html += data_row.obj.text;
-	
-	if (kanbancomponent_chart_obj.readonly) {
-		if (typeof(data_row.obj.tags)!="undefined") {
-			html += '<hr><div class="tag">';
-			html += data_row.obj.tags + '</div>';
-		};
-	} else {
-		//Read write mode
+
+	if ((!kanbancomponent_chart_obj.readonly) || (typeof(data_row.obj.tags)!="undefined")) {
 		html += '<hr>';
-		html += '<div class="tag">';
-		if (typeof(data_row.obj.tags)!="undefined") {
-			html += data_row.obj.tags;
-		};
-		html += '<span class="ui-icon ui-icon-pencil" id="kanbancomponent_edittag"></span>';
-		html += '</div>';
-	};
+	}
+
+	html += '<div class="tag">';
+	html += knabancomponent_getcardHTML_tagdivcontents(data_row);
+	html += '</div>';
+	
 	
 	//html += ' (ORDER=' + data_row.obj.$order + ')'; //DEBUG LINE TO DISPLAY ORDER
 	html += '</div>';
@@ -217,8 +227,34 @@ function kanbancomponent_init(readonly) {
 		
 		$(document).on('click.kanbancomponent', "#kanbancomponent_edittag", function (event) {
 			var data_item = kanbancomponent_chart_obj.data[$(this).closest("div.card").data("data_pos")];
+			rjmlib_ui_textareainputbox(
+				"Edit Tags", //prompt, 
+				"Edit Tags for " + data_item.text, //title, 
+				data_item.tags, //defaultVal, 
+				[
+					{
+						id: "submit",
+						text: "Submit",
+						fn: function (new_value,butID,data_item) {
+							rjmlib_ui_questionbox("Tags for " + data_item.text + " updated to " + new_value + ".");
+							data_item.tags = new_value;
+							kanbancomponent_buildtaglist_tag(new_value);
+							//TODO Update card html
+						}
+					},
+					{
+						id: "cancel",
+						text: "Cancel",
+						fn: function (password,butID,data_item) {
+							//Cancel - do nothing
+						}
+					}
+				], //buts, 
+				data_item, //passback
+				40, //cols
+				1 //rows
+			);			
 			//console.log(data_item);
-			alert("TODO Edit tags for " + data_item.text);
 			event.preventDefault();
 		});		
 		
