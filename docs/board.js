@@ -137,7 +137,7 @@ return values:
  - READWRITE
 */
 function board_check_sheet_accessLevel(sheetID,cbfunction) {
-console.log("board_check_sheet_accessLevel start");
+	//console.log("board_check_sheet_accessLevel start");
 
 	gapi.client.sheets.spreadsheets.get({
 		spreadsheetId: sheetID,
@@ -145,7 +145,6 @@ console.log("board_check_sheet_accessLevel start");
 		ranges: "A1",
 		fields:"sheets"
 	}).then(function(response) {
-		console.log("got response");
 		if (response.status!=200) {
 			cbfunction("NONE");
 			return;

@@ -119,7 +119,7 @@ function getKANBANHtml() {
 function displayKANBAN() {
 	$("#MAIN").html(getKANBANHtml());
 	$("#MAIN").css("display","inline");
-	console.log((accessLevel!="READWRITE"));
+	//console.log((accessLevel!="READWRITE"));
 	kanbancomponent_init((accessLevel!="READWRITE"));
 	
 };

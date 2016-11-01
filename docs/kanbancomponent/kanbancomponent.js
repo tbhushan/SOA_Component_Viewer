@@ -8,7 +8,8 @@ Kan Ban Component created by Robert Metcalf
 
 var kanbancomponent_chart_obj = {
 	list: [],
-	data: []
+	data: [],
+	tag_list: []
 };
 
 /*
@@ -108,10 +109,45 @@ function kanbancomponent_create(onAfterDrop, onListItemDblClick) {
 	return html;
 }
 
+//Given a comma seperated list of tags add items to the tag list
+//if they are not already there
+function kanbancomponent_buildtaglist_tag(comma_seperated_tag_list) {
+	var tags = comma_seperated_tag_list.split(",");
+	for (var i=0;i<tags.length;i++) {
+		if (typeof(tags[i])!="undefined") {
+			var tag = tags[i].trim();
+			if (tag!="") {
+				if (typeof(kanbancomponent_chart_obj.tag_list[tag])=="undefined") {
+					kanbancomponent_chart_obj.tag_list[tag] = kanbancomponent_chart_obj.tag_list[tag];
+				};
+			};
+		};
+	};
+};
+
+//Called as part of init to build the internal tag list
+//kanbancomponent_chart_obj.tag_list
+function kanbancomponent_buildtaglist() {
+	for (var i=0; i<kanbancomponent_chart_obj.data.length; i++) {
+		if (typeof(kanbancomponent_chart_obj.data[i].obj.tags)!="undefined") {
+			if (kanbancomponent_chart_obj.data[i].obj.tags.trim()!="") {
+				kanbancomponent_buildtaglist_tag(kanbancomponent_chart_obj.data[i].obj.tags);
+			};
+		};
+	};
+};
+
 //called after html is in document
 function kanbancomponent_init(readonly) {
 	if (typeof(readonly)=="undefined") readonly=false;
 
+	kanbancomponent_buildtaglist();
+	
+	//Example of iterating through tag list
+	//for (var obj in kanbancomponent_chart_obj.tag_list) {
+	//	console.log(obj);
+	//};
+	
 	//Set all table widths high so they all end up with the same width
 	$("table.kanbancomponent tr.headrow th").width(10000);
 	
