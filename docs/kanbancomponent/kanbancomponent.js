@@ -226,7 +226,8 @@ function kanbancomponent_init(readonly) {
 		});
 		
 		$(document).on('click.kanbancomponent', "#kanbancomponent_edittag", function (event) {
-			var data_item = kanbancomponent_chart_obj.data[$(this).closest("div.card").data("data_pos")];
+			var data_item_pos = $(this).closest("div.card").data("data_pos");
+			var data_item = kanbancomponent_chart_obj.data[data_item_pos];
 			rjmlib_ui_textareainputbox(
 				"Edit Tags", //prompt, 
 				"Edit Tags for " + data_item.text, //title, 
@@ -235,11 +236,17 @@ function kanbancomponent_init(readonly) {
 					{
 						id: "submit",
 						text: "Submit",
-						fn: function (new_value,butID,data_item) {
+						fn: function (new_value,butID,data_item_pos) {
+							var data_item = kanbancomponent_chart_obj.data[data_item_pos];
 							rjmlib_ui_questionbox("Tags for " + data_item.text + " updated to " + new_value + ".");
 							data_item.tags = new_value;
 							kanbancomponent_buildtaglist_tag(new_value);
-							//TODO Update card html
+							
+							//update the displayed card html
+							console.log(data_item_pos);
+							console.log(data_item);
+							console.log($("div.card[data-data_pos=" + data_item_pos + "] div.tag"));
+							$("div.card[data-data_pos=" + data_item_pos + "] div.tag").html(knabancomponent_getcardHTML_tagdivcontents(data_item));
 						}
 					},
 					{
@@ -250,7 +257,7 @@ function kanbancomponent_init(readonly) {
 						}
 					}
 				], //buts, 
-				data_item, //passback
+				data_item_pos, //passback
 				40, //cols
 				1 //rows
 			);			
