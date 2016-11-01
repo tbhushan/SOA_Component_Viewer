@@ -9,7 +9,8 @@ Kan Ban Component created by Robert Metcalf
 var kanbancomponent_chart_obj = {
 	list: [],
 	data: [],
-	tag_list: []
+	tag_list: [],
+	readonly: false
 };
 
 /*
@@ -33,10 +34,23 @@ function knabancomponent_getcardHTML(data_row) {
 	var html = "";
 	html += '<div class="card ' + data_row.obj.$css + '" data-data_pos="' + data_row.data_pos + '">';
 	html += data_row.obj.text;
-	if (typeof(data_row.obj.tags)!="undefined") {
-		html += '<hr><div class="tag">';
-		html += data_row.obj.tags + '</div>';
+	
+	if (kanbancomponent_chart_obj.readonly) {
+		if (typeof(data_row.obj.tags)!="undefined") {
+			html += '<hr><div class="tag">';
+			html += data_row.obj.tags + '</div>';
+		};
+	} else {
+		//Read write mode
+		html += '<hr>';
+		html += '<div class="tag">';
+		if (typeof(data_row.obj.tags)!="undefined") {
+			html += data_row.obj.tags;
+		};
+		html += '<span class="ui-icon ui-icon-pencil" id="kanbancomponent_edittag"></span>';
+		html += '</div>';
 	};
+	
 	//html += ' (ORDER=' + data_row.obj.$order + ')'; //DEBUG LINE TO DISPLAY ORDER
 	html += '</div>';
 	return html;
@@ -140,6 +154,7 @@ function kanbancomponent_buildtaglist() {
 //called after html is in document
 function kanbancomponent_init(readonly) {
 	if (typeof(readonly)=="undefined") readonly=false;
+	kanbancomponent_chart_obj.readonly = readonly;
 
 	kanbancomponent_buildtaglist();
 	
@@ -151,7 +166,7 @@ function kanbancomponent_init(readonly) {
 	//Set all table widths high so they all end up with the same width
 	$("table.kanbancomponent tr.headrow th").width(10000);
 	
-	if (!readonly) {
+	if (!kanbancomponent_chart_obj.readonly) {
 		$("table.kanbancomponent tr.mainrow td ").sortable({
 			start: function() {
 				$("table.kanbancomponent tr.mainrow td ").removeClass('ui-state-active');
@@ -199,6 +214,14 @@ function kanbancomponent_init(readonly) {
 			},
 			connectWith: "table.kanbancomponent tr.mainrow td"
 		});
+		
+		$(document).on('click.kanbancomponent', "#kanbancomponent_edittag", function (event) {
+			var data_item = kanbancomponent_chart_obj.data[$(this).closest("div.card").data("data_pos")];
+			//console.log(data_item);
+			alert("TODO Edit tags for " + data_item.text);
+			event.preventDefault();
+		});		
+		
 	}; //if !readonly
 
 	$(document).on('dblclick.kanbancomponent', "table.kanbancomponent tr.mainrow td div.card", function (event) {
@@ -206,8 +229,7 @@ function kanbancomponent_init(readonly) {
 			kanbancomponent_chart_obj.onListItemDblClick($($(this)[0]).data("data_pos"),kanbancomponent_chart_obj.data);
 		};
 		event.preventDefault();
-	}
-	);
+	});
 	
 };
 
