@@ -30,38 +30,38 @@ function kanbancomponent_appenddata(data_to_append) {
 	Array.prototype.push.apply(kanbancomponent_chart_obj.data,data_to_append);
 };
 
-function knabancomponent_getcardHTML_tagdivcontents(data_row) {
+function knabancomponent_getcardHTML_tagdivcontents(data_row_and_pos) {
 	if (kanbancomponent_chart_obj.readonly) {
-		if (typeof(data_row.obj.tags)=="undefined") {
+		if (typeof(data_row_and_pos.data_obj.tags)=="undefined") {
 			return "";
 		};
-		return data_row.obj.tags;
+		return data_row_and_pos.data_obj.tags;
 	};
 	var html = "";
 
-	if (typeof(data_row.obj.tags)!="undefined") {
-		html += data_row.obj.tags;
+	if (typeof(data_row_and_pos.data_obj.tags)!="undefined") {
+		html += data_row_and_pos.data_obj.tags;
 	};
 
 	html += '<span class="ui-icon ui-icon-pencil" id="kanbancomponent_edittag"></span>';
 	return html;
 };
 
-function knabancomponent_getcardHTML(data_row) {
+function knabancomponent_getcardHTML(data_row_and_pos) {
 	var html = "";
-	html += '<div class="card ' + data_row.obj.$css + '" data-data_pos="' + data_row.data_pos + '">';
-	html += data_row.obj.text;
+	html += '<div class="card ' + data_row_and_pos.data_obj.$css + '" data-data_pos="' + data_row_and_pos.data_pos + '">';
+	html += data_row_and_pos.data_obj.text;
 
-	if ((!kanbancomponent_chart_obj.readonly) || (typeof(data_row.obj.tags)!="undefined")) {
+	if ((!kanbancomponent_chart_obj.readonly) || (typeof(data_row_and_pos.data_obj.tags)!="undefined")) {
 		html += '<hr>';
 	}
 
 	html += '<div class="tag">';
-	html += knabancomponent_getcardHTML_tagdivcontents(data_row);
+	html += knabancomponent_getcardHTML_tagdivcontents(data_row_and_pos);
 	html += '</div>';
 	
 	
-	//html += ' (ORDER=' + data_row.obj.$order + ')'; //DEBUG LINE TO DISPLAY ORDER
+	//html += ' (ORDER=' + data_row_and_pos.$order + ')'; //DEBUG LINE TO DISPLAY ORDER
 	html += '</div>';
 	return html;
 };
@@ -71,13 +71,13 @@ function kanbancomponent_getCardsForList(listName) {
 	
 	for (var i=0; i<kanbancomponent_chart_obj.data.length; i++) {
 		if (kanbancomponent_chart_obj.data[i].status==listName) {
-			res.push({data_pos:i, obj: kanbancomponent_chart_obj.data[i]});
+			res.push({data_pos:i, data_obj: kanbancomponent_chart_obj.data[i]});
 		};
 	};
 	
 	res.sort(function(a,b){
-		if (a.obj.$order<b.obj.$order) return -1;
-		if (a.obj.$order>b.obj.$order) return 1;
+		if (a.data_obj.$order<b.data_obj.$order) return -1;
+		if (a.data_obj.$order>b.data_obj.$order) return 1;
 		return 0;
 	});
 	
@@ -105,10 +105,11 @@ function kanbancomponent_cleanOrders() {
 
 //Main function called to create kanban component. output is HTML
 // limited to one component per page
-function kanbancomponent_create(onAfterDrop, onListItemDblClick) {
+function kanbancomponent_create(onAfterDrop, onListItemDblClick, onChangedTags) {
 	var html = "";
 	kanbancomponent_chart_obj.onAfterDrop = onAfterDrop;
 	kanbancomponent_chart_obj.onListItemDblClick = onListItemDblClick;
+	kanbancomponent_chart_obj.onChangedTags = onChangedTags;
 	
 	kanbancomponent_cleanOrders();
 	
@@ -169,8 +170,8 @@ function kanbancomponent_init(readonly) {
 	kanbancomponent_buildtaglist();
 	
 	//Example of iterating through tag list
-	//for (var obj in kanbancomponent_chart_obj.tag_list) {
-	//	console.log(obj);
+	//for (var j in kanbancomponent_chart_obj.tag_list) {
+	//	console.log(j);
 	//};
 	
 	//Set all table widths high so they all end up with the same width
@@ -238,18 +239,19 @@ function kanbancomponent_init(readonly) {
 						text: "Submit",
 						fn: function (new_value,butID,data_item_pos) {
 							var data_item = kanbancomponent_chart_obj.data[data_item_pos];
-							rjmlib_ui_questionbox("Tags for " + data_item.text + " updated to " + new_value + ".");
+							//rjmlib_ui_questionbox("Tags for " + data_item.text + " updated to " + new_value + ".");
 							data_item.tags = new_value;
+							
+							//ensure internal list of tags is up to date
 							kanbancomponent_buildtaglist_tag(new_value);
 							
 							//update the displayed card html
-							console.log(data_item_pos);
-							console.log(data_item);
-							console.log($("div.card[data-data_pos=" + data_item_pos + "] div.tag"));
-							//TODO UPDATE
-							var card_html = knabancomponent_getcardHTML_tagdivcontents(data_item);
-							console.log(card_html);
+							var card_html = knabancomponent_getcardHTML_tagdivcontents({data_pos:data_item_pos, data_obj:data_item});
 							$("div.card[data-data_pos=" + data_item_pos + "] div.tag").html(card_html);
+							
+							if (typeof(kanbancomponent_chart_obj.onChangedTags)!="undefined") {
+								kanbancomponent_chart_obj.onChangedTags(data_item_pos,kanbancomponent_chart_obj.data);
+							};
 						}
 					},
 					{

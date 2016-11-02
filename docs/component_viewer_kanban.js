@@ -109,7 +109,7 @@ function getKANBANHtml() {
 	ret += GetMenu();
 	ret += '</td></tr><tr class="main"><td>';
 	
-	ret += kanbancomponent_create(CB_onAfterDrop,CB_item_dbl_click);
+	ret += kanbancomponent_create(CB_onAfterDrop,CB_item_dbl_click,CB_changedTags);
 	
 	ret += '</td></tr></table>';
 	
@@ -129,45 +129,78 @@ function CB_item_dbl_click(item_array_pos, data) {
 	data[item_array_pos].view_fn(data[item_array_pos].uid)
 };
 
+//Save all the changeable fields from an object
+//calls saveBatch
+function saveObj(sheet_data_item,sheet_row,obj) {
+	//console.log(sheet_data_item.sheet_name + "!" + board_columnToLetter(sheet_data_item.listcol) + sheet_row);
+	//console.log(obj.status);
+	board_append_saveBatch({
+		"range": sheet_data_item.sheet_name + "!" + board_columnToLetter(sheet_data_item.listcol) + sheet_row,
+		"majorDimension": "ROWS",
+		"values": [
+			[obj.status]
+		],
+	});
+	board_append_saveBatch({
+		"range": sheet_data_item.sheet_name + "!" + board_columnToLetter(sheet_data_item.indexcol) + sheet_row,
+		"majorDimension": "ROWS",
+		"values": [
+			[obj.$order]
+		],
+	});
+	var tt = obj.tags;
+	if (typeof(tt)=="undefined") tt = "";
+	board_append_saveBatch({
+		"range": sheet_data_item.sheet_name + "!" + board_columnToLetter(sheet_data_item.tagscol) + sheet_row,
+		"majorDimension": "ROWS",
+		"values": [
+			[tt]
+		],
+	});	
+};
+
 function CB_onAfterDrop(new_status,item_dropped_array_pos,data) {
 	//Save the entire list - required as orders will be changed
 	board_prepare_saveBatch();
 	for (var c=0;c<data.length;c++) {
 		var row = data[c];
 		if (row.status==new_status) {
-			var sheet_data_item = sheet_data[ic_soa_data_getSheetList()[row.sheet_data_item]];
-			board_append_saveBatch({
-				"range": sheet_data_item.sheet_name + "!" + board_columnToLetter(sheet_data_item.listcol) + row.sheet_row,
-				"majorDimension": "ROWS",
-				"values": [
-					[row.status]
-				],
-			});
-			board_append_saveBatch({
-				"range": sheet_data_item.sheet_name + "!" + board_columnToLetter(sheet_data_item.indexcol) + row.sheet_row,
-				"majorDimension": "ROWS",
-				"values": [
-					[row.$order]
-				],
-			});
-			/*Tags are not editable
-			var tt = row.tags;
-			if (typeof(tt)=="undefined") tt = "";
-			board_append_saveBatch({
-				"range": sheet_data_item.sheet_name + "!" + board_columnToLetter(sheet_data_item.tagscol) + row.sheet_row,
-				"majorDimension": "ROWS",
-				"values": [
-					[row.tt]
-				],
-			});*/
 
 			//Copy changed data into local object
-			row.status=row.status;
-			row.$order=row.$order;
+			row.obj.status=row.status;
+			row.obj.$order=row.$order;
+			row.obj.tags=row.tags;
+			
+			var sheet_data_item = sheet_data[ic_soa_data_getSheetList()[row.sheet_data_item]];
+			saveObj(sheet_data_item,row.sheet_row,row.obj);
+
 		};
 		
 	};
 	
+	board_execute_saveBatch(spreadsheetId);
+	
+};
+
+//Call back to update after tags have changed
+function CB_changedTags(item_array_pos,data) {
+	var row = data[item_array_pos];
+	if (row.obj.tags==row.tags) {
+		console.log("No change to tags");
+		return;
+	};
+	row.obj.status=row.status;
+	row.obj.$order=row.$order;
+	row.obj.tags=row.tags;
+	
+	//console.log("Updating tags in " + row.obj.name + " to " + row.obj.tags);
+	
+
+	board_prepare_saveBatch();
+
+	var sheet_data_item = sheet_data[ic_soa_data_getSheetList()[row.sheet_data_item]];
+	saveObj(sheet_data_item,row.sheet_row,row.obj);
+
 	board_execute_saveBatch(spreadsheetId);
 	
 };

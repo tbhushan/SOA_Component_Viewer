@@ -112,6 +112,12 @@ function board_append_saveBatch(saveObj) {
 	board_saveBatch.push(saveObj);
 };
 function board_execute_saveBatch(spreadsheetId) {
+	if (board_saveBatch.length==0) {
+		//console.log("Nothing to save");
+		return;
+	} else {
+		//console.log("Making " + board_saveBatch.length + " updates");
+	};
 	var batchUpdateData = {
 		"valueInputOption": "RAW",
 		"data": board_saveBatch
