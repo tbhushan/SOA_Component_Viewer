@@ -136,14 +136,14 @@ function kanbancomponent_create(onAfterDrop, onListItemDblClick, onChangedTags) 
 
 //Given a comma seperated list of tags add items to the tag list
 //if they are not already there
-function kanbancomponent_buildtaglist_tag(comma_seperated_tag_list) {
+function kanbancomponent_buildtaglist_tag(comma_seperated_tag_list, outputTagList) {
 	var tags = comma_seperated_tag_list.split(",");
 	for (var i=0;i<tags.length;i++) {
 		if (typeof(tags[i])!="undefined") {
 			var tag = tags[i].trim();
 			if (tag!="") {
-				if (typeof(kanbancomponent_chart_obj.tag_list[tag])=="undefined") {
-					kanbancomponent_chart_obj.tag_list[tag] = kanbancomponent_chart_obj.tag_list[tag];
+				if (typeof(outputTagList[tag])=="undefined") {
+					outputTagList[tag] = tag;
 				};
 			};
 		};
@@ -156,7 +156,7 @@ function kanbancomponent_buildtaglist() {
 	for (var i=0; i<kanbancomponent_chart_obj.data.length; i++) {
 		if (typeof(kanbancomponent_chart_obj.data[i].tags)!="undefined") {
 			if (kanbancomponent_chart_obj.data[i].tags.trim()!="") {
-				kanbancomponent_buildtaglist_tag(kanbancomponent_chart_obj.data[i].tags);
+				kanbancomponent_buildtaglist_tag(kanbancomponent_chart_obj.data[i].tags, kanbancomponent_chart_obj.tag_list);
 			};
 		};
 	};
@@ -229,10 +229,25 @@ function kanbancomponent_init(readonly) {
 		$(document).on('click.kanbancomponent', "#kanbancomponent_edittag", function (event) {
 			var data_item_pos = $(this).closest("div.card").data("data_pos");
 			var data_item = kanbancomponent_chart_obj.data[data_item_pos];
-			rjmlib_ui_textareainputbox(
-				"Edit Tags", //prompt, 
+			
+			var this_items_taglist_arr = [];
+			kanbancomponent_buildtaglist_tag(data_item.tags, this_items_taglist_arr);
+
+			var listOfCheckboxes = [];
+			for (var j in kanbancomponent_chart_obj.tag_list) {
+				var selectedd = true;
+				if (typeof(this_items_taglist_arr[j])=="undefined") selectedd = false;
+				listOfCheckboxes.push({
+					text: j,
+					selected: selectedd
+				});
+			};
+
+			
+			rjmlib_ui_multicheckboxinputbox(
+				listOfCheckboxes, //List of check boxes
+				"Select tags to use", //prompt, 
 				"Edit Tags for " + data_item.text, //title, 
-				data_item.tags, //defaultVal, 
 				[
 					{
 						id: "submit",
@@ -243,7 +258,7 @@ function kanbancomponent_init(readonly) {
 							data_item.tags = new_value;
 							
 							//ensure internal list of tags is up to date
-							kanbancomponent_buildtaglist_tag(new_value);
+							kanbancomponent_buildtaglist_tag(new_value, kanbancomponent_chart_obj.tag_list);
 							
 							//update the displayed card html
 							var card_html = knabancomponent_getcardHTML_tagdivcontents({data_pos:data_item_pos, data_obj:data_item});
@@ -262,9 +277,7 @@ function kanbancomponent_init(readonly) {
 						}
 					}
 				], //buts, 
-				data_item_pos, //passback
-				40, //cols
-				1 //rows
+				data_item_pos //passback
 			);			
 			//console.log(data_item);
 			event.preventDefault();

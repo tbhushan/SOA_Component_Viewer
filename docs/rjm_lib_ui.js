@@ -63,6 +63,15 @@ function rjmlib_ui_init() {
 		width: 800
 	});
 	$("#rjmlib_ui_textareainputbox textarea").keypress(rjmlib_ui_textareainputboxKeypress);
+
+	var ret = "<div id=\"rjmlib_ui_multicheckboxinputbox\" title=\"Dialog Title\">"
+	ret += "<p>Prompt...</p><br><table></table>";
+	ret += "</div>"
+	$("body").append(ret);	
+	$( "#rjmlib_ui_multicheckboxinputbox" ).dialog({
+		autoOpen: false,
+		width: 1000
+	});
 };
 
 function rjmlib_ui_questionbox_isopen() {
@@ -266,4 +275,32 @@ function rjmlib_ui_textareainputbox(prompt, title, defaultVal, buts, passback, c
 	
 }
 
+/*
+Displays a dialog box with mutiple check boxes
+inputs:
+listOfChecks[] {
+	text: xxx,
+	selected: boolean
+};
+buts[] {
+	id: id
+	text: "text to display on button",
+	fn: "callback function"
+}
+*/
+function rjmlib_ui_multicheckboxinputbox(listOfChecks, prompt, title, buts, passbackData ) {
+	if ($("#rjmlib_ui_multicheckboxinputbox").dialog( "isOpen" )==true) {
+		alert("ERROR in rjmlib_ui_multicheckboxinputbox SECOND DIALOG LAUNCHED - " + prompt);
+		return;
+	};
+
+	title = typeof title !== 'undefined' ? title : "Dialog";
+	$( "#rjmlib_ui_multicheckboxinputbox" ).dialog('option', 'title', title);
+	$( "#rjmlib_ui_multicheckboxinputbox p" ).text(prompt);
+	
+	console.log(listOfChecks);
+	
+	$( "#rjmlib_ui_multicheckboxinputbox" ).dialog( "open" );
+	
+}
 
