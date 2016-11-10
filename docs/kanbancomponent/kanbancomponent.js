@@ -250,11 +250,28 @@ function kanbancomponent_init(readonly) {
 				"Edit Tags for " + data_item.text, //title, 
 				[
 					{
-						id: "submit",
-						text: "Submit",
-						fn: function (new_value,butID,data_item_pos) {
+						id: "ok",
+						text: "OK",
+						fn: function (butID,new_list_of_checks,data_item_pos) {
 							var data_item = kanbancomponent_chart_obj.data[data_item_pos];
 							//rjmlib_ui_questionbox("Tags for " + data_item.text + " updated to " + new_value + ".");
+							
+							var orig_tag_value = data_item.tags;
+							var new_value = "";
+							var number_added = 0;
+							for (var curCheckIdx in new_list_of_checks) {
+								if (new_list_of_checks[curCheckIdx].selected) {
+									if (number_added>0) new_value += ","; //No spaces between items
+									new_value += new_list_of_checks[curCheckIdx].text;
+									number_added++;
+								};
+							};
+							
+							//Output strings should always be in same order
+							new_value = new_value.split(",").sort().join(",")
+							
+							if (orig_tag_value==new_value) return;
+							
 							data_item.tags = new_value;
 							
 							//ensure internal list of tags is up to date
@@ -267,12 +284,13 @@ function kanbancomponent_init(readonly) {
 							if (typeof(kanbancomponent_chart_obj.onChangedTags)!="undefined") {
 								kanbancomponent_chart_obj.onChangedTags(data_item_pos,kanbancomponent_chart_obj.data);
 							};
+							
 						}
 					},
 					{
 						id: "cancel",
 						text: "Cancel",
-						fn: function (password,butID,data_item) {
+						fn: function (butID,new_list_of_checks,data_item_pos) {
 							//Cancel - do nothing
 						}
 					}

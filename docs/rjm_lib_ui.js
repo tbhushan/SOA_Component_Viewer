@@ -332,7 +332,7 @@ function rjmlib_ui_multicheckboxinputbox(listOfChecks, prompt, title, buts, pass
 			click: function(event) {
 				var but_pressed = rjmlib_ui_multicheckboxinputbox_buts[$(event.target.closest("button")).data("index")];
 				$( this ).dialog( "close" ); 
-				but_pressed.fn(rjmlib_ui_multicheckboxinputbox_listOfChecks);
+				but_pressed.fn(but_pressed.id,rjmlib_ui_multicheckboxinputbox_listOfChecks,passbackData);
 			},
 			"data-index": c
 		});
