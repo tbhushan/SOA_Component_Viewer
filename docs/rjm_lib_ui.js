@@ -298,8 +298,9 @@ buts[] {
 	text: "text to display on button",
 	fn: "callback function"
 }
+addButText - undefined for no add button, otherwise the text for the add button.
 */
-function rjmlib_ui_multicheckboxinputbox(listOfChecks, prompt, title, buts, passbackData ) {
+function rjmlib_ui_multicheckboxinputbox(listOfChecks, prompt, title, buts, passbackData, addButText ) {
 	if ($("#rjmlib_ui_multicheckboxinputbox").dialog( "isOpen" )==true) {
 		alert("ERROR in rjmlib_ui_multicheckboxinputbox SECOND DIALOG LAUNCHED - " + prompt);
 		return;
@@ -310,7 +311,6 @@ function rjmlib_ui_multicheckboxinputbox(listOfChecks, prompt, title, buts, pass
 	$( "#rjmlib_ui_multicheckboxinputbox p" ).text(prompt);
 	
 	var tbl = $( "#rjmlib_ui_multicheckboxinputbox" ).find("table");
-	var cols = 4; //columns to display checkboxes in
 	
 	rjmlib_ui_multicheckboxinputbox_listOfChecks = listOfChecks;
 	rjmlib_ui_multicheckboxinputbox_buts = buts;
@@ -321,7 +321,7 @@ function rjmlib_ui_multicheckboxinputbox(listOfChecks, prompt, title, buts, pass
 	
 	for (var curCheckIdx in rjmlib_ui_multicheckboxinputbox_listOfChecks) {
 		rjmlib_ui_multicheckboxinputbox_listOfChecks[curCheckIdx].idx = curCheckIdx;
-		rjmlib_ui_multicheckboxinputbox_addcheck(rjmlib_ui_multicheckboxinputbox_listOfChecks[curCheckIdx],tbl,cols);
+		rjmlib_ui_multicheckboxinputbox_addcheck(rjmlib_ui_multicheckboxinputbox_listOfChecks[curCheckIdx],tbl,rjmlib_ui_multicheckboxinputbox_cols);
 	};
 	
 	//Add buttons to dialog
@@ -337,6 +337,62 @@ function rjmlib_ui_multicheckboxinputbox(listOfChecks, prompt, title, buts, pass
 			"data-index": c
 		});
 	};
+
+	if (typeof(addButText)!="undefined") {
+		buts_to_add.push({
+			text: addButText,
+			click: function(event) {
+				rjmlib_ui_textareainputbox(
+					"Enter New Tag", 
+					"New Tag",  //Title
+					"",  //DEfault value
+					[
+						{
+							id: "ok",
+							text: "Ok",
+							fn: function (res,rowID,passback) {
+								res = res.trim();
+								if (res.length<1) {
+									rjmlib_ui_questionbox("New value must have more than one character", "Error creating new item");
+									return;
+								};
+								if (res.indexOf(",") !== -1) {
+									rjmlib_ui_questionbox("Value should not contain commas", "Error creating new item");
+									return;
+								}
+								if (rjmlib_ui_multicheckboxinputbox_checkexsits(res)) {
+									rjmlib_ui_questionbox("Value already exists", "Error creating new item");
+									return;
+								}
+								var newIDX = rjmlib_ui_multicheckboxinputbox_listOfChecks.length;
+								rjmlib_ui_multicheckboxinputbox_listOfChecks[newIDX] = {
+									text: res,
+									selected: true,
+									idx: newIDX
+								};
+								rjmlib_ui_multicheckboxinputbox_addcheck(
+									rjmlib_ui_multicheckboxinputbox_listOfChecks[newIDX],
+									$( "#rjmlib_ui_multicheckboxinputbox" ).find("table"),
+									rjmlib_ui_multicheckboxinputbox_cols
+								);
+							}
+						},
+						{
+							id: "cancel",
+							text: "Cancel",
+							fn: function (res,rowID,passback) {
+								//Cancel - do nothing
+							}
+						}
+					], //buts
+					undefined, //passback
+					50, //cols
+					1 //rows
+				);
+			}
+		});
+	};
+
 	$( "#rjmlib_ui_multicheckboxinputbox" ).dialog('option', 'buttons', buts_to_add);
 
 	
@@ -346,6 +402,7 @@ function rjmlib_ui_multicheckboxinputbox(listOfChecks, prompt, title, buts, pass
 }
 var rjmlib_ui_multicheckboxinputbox_listOfChecks = [];
 var rjmlib_ui_multicheckboxinputbox_buts = [];
+var rjmlib_ui_multicheckboxinputbox_cols = 4;
 function rjmlib_ui_multicheckboxinputbox_addcheck(obj,tbl,cols) {
 	var lastRow = tbl.find("tr:last");
 	if (lastRow.find("td").length>=cols) {
@@ -356,4 +413,11 @@ function rjmlib_ui_multicheckboxinputbox_addcheck(obj,tbl,cols) {
 	if (obj.selected) c = " checked";
 	lastRow.append('<td> <input type="checkbox" class="rjmlib_ui_multicheckboxinputbox_cb" value="' + obj.idx + '"' + c + '> ' + obj.text + '</td>');
 }
+function rjmlib_ui_multicheckboxinputbox_checkexsits(text) {
+	for (var curChkIdx in rjmlib_ui_multicheckboxinputbox_listOfChecks) {
+		if (rjmlib_ui_multicheckboxinputbox_listOfChecks[curChkIdx].text==text) return true;
+	};
+	return false;
+}
+
 

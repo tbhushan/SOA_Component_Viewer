@@ -295,7 +295,8 @@ function kanbancomponent_init(readonly) {
 						}
 					}
 				], //buts, 
-				data_item_pos //passback
+				data_item_pos, //passback
+				"New Tag"
 			);			
 			//console.log(data_item);
 			event.preventDefault();
