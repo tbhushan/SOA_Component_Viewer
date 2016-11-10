@@ -72,6 +72,16 @@ function rjmlib_ui_init() {
 		autoOpen: false,
 		width: 1000
 	});
+	$(document).on('click.rjmlib_ui', ".rjmlib_ui_multicheckboxinputbox_cb", function(event) {
+		//click function for checkbox
+		var id_clicked_on = $(this).val();
+		var new_val = false;
+		if ($(this).is(':checked')) new_val = true;
+		rjmlib_ui_multicheckboxinputbox_listOfChecks[id_clicked_on].selected = new_val;
+		//console.log(rjmlib_ui_multicheckboxinputbox_listOfChecks[id_clicked_on]);
+		//console.log(id_clicked_on + " nv:" + new_val);
+	});
+	
 };
 
 function rjmlib_ui_questionbox_isopen() {
@@ -281,6 +291,7 @@ inputs:
 listOfChecks[] {
 	text: xxx,
 	selected: boolean
+	idx: index in array //Set by this function not passed in
 };
 buts[] {
 	id: id
@@ -298,9 +309,51 @@ function rjmlib_ui_multicheckboxinputbox(listOfChecks, prompt, title, buts, pass
 	$( "#rjmlib_ui_multicheckboxinputbox" ).dialog('option', 'title', title);
 	$( "#rjmlib_ui_multicheckboxinputbox p" ).text(prompt);
 	
-	console.log(listOfChecks);
+	var tbl = $( "#rjmlib_ui_multicheckboxinputbox" ).find("table");
+	var cols = 4; //columns to display checkboxes in
+	
+	rjmlib_ui_multicheckboxinputbox_listOfChecks = listOfChecks;
+	rjmlib_ui_multicheckboxinputbox_buts = buts;
+	
+	//Delete all rows in the table
+	tbl.empty();
+	tbl.append("<tr></tr>");
+	
+	for (var curCheckIdx in rjmlib_ui_multicheckboxinputbox_listOfChecks) {
+		rjmlib_ui_multicheckboxinputbox_listOfChecks[curCheckIdx].idx = curCheckIdx;
+		rjmlib_ui_multicheckboxinputbox_addcheck(rjmlib_ui_multicheckboxinputbox_listOfChecks[curCheckIdx],tbl,cols);
+	};
+	
+	//Add buttons to dialog
+	var buts_to_add = [];
+	for (var c=0;c<rjmlib_ui_multicheckboxinputbox_buts.length;c++) {
+		buts_to_add.push({
+			text: rjmlib_ui_multicheckboxinputbox_buts[c].text,
+			click: function(event) {
+				var but_pressed = rjmlib_ui_multicheckboxinputbox_buts[$(event.target.closest("button")).data("index")];
+				$( this ).dialog( "close" ); 
+				but_pressed.fn(rjmlib_ui_multicheckboxinputbox_listOfChecks);
+			},
+			"data-index": c
+		});
+	};
+	$( "#rjmlib_ui_multicheckboxinputbox" ).dialog('option', 'buttons', buts_to_add);
+
+	
 	
 	$( "#rjmlib_ui_multicheckboxinputbox" ).dialog( "open" );
 	
+}
+var rjmlib_ui_multicheckboxinputbox_listOfChecks = [];
+var rjmlib_ui_multicheckboxinputbox_buts = [];
+function rjmlib_ui_multicheckboxinputbox_addcheck(obj,tbl,cols) {
+	var lastRow = tbl.find("tr:last");
+	if (lastRow.find("td").length>=cols) {
+		tbl.append("<tr></tr>");
+		lastRow = tbl.find("tr:last");
+	};
+	var c = "";
+	if (obj.selected) c = " checked";
+	lastRow.append('<td> <input type="checkbox" class="rjmlib_ui_multicheckboxinputbox_cb" value="' + obj.idx + '"' + c + '> ' + obj.text + '</td>');
 }
 
