@@ -171,6 +171,18 @@
 	
 	};
 	
+	
+	function getConfluenceURL(obj) {
+		//https://wiki.imperial.ac.uk/display/IED/Person
+		//https://wiki.imperial.ac.uk/display/IED/Banner%20-%20Person%20integration
+		var location = "/display/IED/" + obj.name;
+		if (typeof(obj.confluenceURLOverride)!="undefined") {
+			location = obj.confluenceURLOverride;
+		};
+		
+		return "https://wiki.imperial.ac.uk" + location;
+	};
+	
 	/*
   function resizeIframe(obj) {
     obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';

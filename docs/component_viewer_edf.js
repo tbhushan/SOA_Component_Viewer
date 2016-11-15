@@ -8,8 +8,6 @@ function getEDFHtml(uid) {
 		return;
 	}
 
-	var confluence_doc_url = "https://wiki.imperial.ac.uk/display/TIR/" + curEDF.name;
-	
 	var ints_to_draw = [];
 	for (var cur_do = 0; cur_do < dataObjects.INTkeys.length; cur_do++) {
 		var cur_int = dataObjects.INTs[dataObjects.INTkeys[cur_do]];
@@ -55,7 +53,7 @@ function getEDFHtml(uid) {
 	
 	ret += '<tr class="main">';
 	ret += '<td width="' + w + 'px">';
-	ret += '<iframe src="' + confluence_doc_url + '" scrolling="yes" height="100%" width="' + w + 'px" >';
+	ret += '<iframe src="' + getConfluenceURL(curEDF) + '" scrolling="yes" height="100%" width="' + w + 'px" >';
 	ret += '</iframe>';
 	ret += '</td>';
 	ret += '<td valign="top" align="left">';
@@ -64,7 +62,7 @@ function getEDFHtml(uid) {
 	ret += '<tr><th>EDF Name:</th><td>' + curEDF.name + '</td></tr>';
 	ret += '<tr><th>Development Status:</th><td>' + curEDF.status + '</td></tr>';
 	ret += '<tr><th>Source System:</th><td>' + curEDF.source_system + '</td></tr>';
-	ret += '<tr><th>Confluence Documentation:</th><td><a href="' + confluence_doc_url + '">Confluence</a></td></tr>';
+	ret += '<tr><th>Confluence Documentation:</th><td><a href="' + getConfluenceURL(curEDF) + '">Confluence</a></td></tr>';
 	ret += '<tr><th>Tags:</th><td>' + curEDF.tags + '</td></tr>';
 	ret += '</table>';
 	
