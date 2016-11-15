@@ -137,13 +137,18 @@ function kanbancomponent_create(onAfterDrop, onListItemDblClick, onChangedTags) 
 //Given a comma seperated list of tags add items to the tag list
 //if they are not already there
 function kanbancomponent_buildtaglist_tag(comma_seperated_tag_list, outputTagList) {
-	var tags = comma_seperated_tag_list.split(",");
-	for (var i=0;i<tags.length;i++) {
-		if (typeof(tags[i])!="undefined") {
-			var tag = tags[i].trim();
-			if (tag!="") {
-				if (typeof(outputTagList[tag])=="undefined") {
-					outputTagList[tag] = tag;
+	if (typeof(comma_seperated_tag_list)!="undefined") {
+		comma_seperated_tag_list=comma_seperated_tag_list.trim();
+		if (comma_seperated_tag_list.length>0) {
+			var tags = comma_seperated_tag_list.split(",");
+			for (var i=0;i<tags.length;i++) {
+				if (typeof(tags[i])!="undefined") {
+					var tag = tags[i].trim();
+					if (tag!="") {
+						if (typeof(outputTagList[tag])=="undefined") {
+							outputTagList[tag] = tag;
+						};
+					};
 				};
 			};
 		};
