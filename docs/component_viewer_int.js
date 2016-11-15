@@ -4,8 +4,6 @@ function getINTHtml(uid) {
 	var ret = "";
 
 	ret += '<table>';
-	ret += '<tr>';
-	ret += '<td>';
 
 	var curINT = dataObjects.INTs[uid];
 	if (typeof(curINT)=="undefined") {
@@ -13,10 +11,8 @@ function getINTHtml(uid) {
 		return;
 	}
 
-	ret += '</td>';
-	ret += '</tr>';
-	ret += '<tr class="main">';
-	ret += '<td valign="top">';
+	ret += '<tr>';
+	ret += '<td valign="top" colspan=2>';
 
 	var edf_pos = {x:180, y:50};
 	var int_pos = {x:700, y:50};
@@ -45,6 +41,29 @@ function getINTHtml(uid) {
 	
 	ret += "</svg>";
 
+	ret += '</td>';
+	ret += '</tr>';
+	
+	var w = $( document ).width() - 400;
+	
+	ret += '<tr class="main">';
+	ret += '<td valign="top" width="' + w + 'px">';
+	ret += '<iframe src="' + getConfluenceURL(curINT) + '" scrolling="yes" height="100%" width="' + w + 'px" >';
+	ret += '</iframe>';
+	ret += '</td>';
+	ret += '<td valign="top" align="left">';
+
+
+	ret += '<table border=1>';
+	ret += '<tr><th>Integration Name:</th><td>' + curINT.name + '</td></tr>';
+	ret += '<tr><th>Development Status:</th><td>' + curINT.status + '</td></tr>';
+	ret += '<tr><th>Source EDF:</th><td>' + curINT.source_edf + '</td></tr>';
+	ret += '<tr><th>Target System:</th><td>' + curINT.target_system + '</td></tr>';
+	ret += '<tr><th>Confluence Documentation:</th><td><a href="' + getConfluenceURL(curINT) + '">Confluence</a></td></tr>';
+	ret += '<tr><th>Tags:</th><td>' + curINT.tags + '</td></tr>';
+	ret += '</table>';
+	
+	
 	ret += '</td>';
 	ret += '</tr>';
 	ret += '</table>';
