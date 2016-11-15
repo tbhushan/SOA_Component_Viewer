@@ -275,7 +275,7 @@ function ic_soa_data_getEDFFromName(edfName, dataObjects) {
 	}
 	//console.log("Failed to find edf named " + edfName);
 	return undefined;
-}
+};
 
 //Given the name of an int return it's object from dataobjects
 function ic_soa_data_getINTFromName(intName, dataObjects) {
@@ -284,7 +284,7 @@ function ic_soa_data_getINTFromName(intName, dataObjects) {
 	}
 	//console.log("Failed to find int named " + intName);
 	return undefined;
-}
+};
 
 //Given the name of a system return it's object from dataobjects
 function ic_soa_data_getSystemFromName(systemName, dataObjects) {
@@ -293,6 +293,6 @@ function ic_soa_data_getSystemFromName(systemName, dataObjects) {
 	}
 	//console.log("Failed to find edf named " + edfName);
 	return undefined;
-}
+};
 
 
