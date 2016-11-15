@@ -277,6 +277,15 @@ function ic_soa_data_getEDFFromName(edfName, dataObjects) {
 	return undefined;
 }
 
+//Given the name of an int return it's object from dataobjects
+function ic_soa_data_getINTFromName(intName, dataObjects) {
+	for (var cur_do = 0; cur_do < dataObjects.INTkeys.length; cur_do++) {
+		if (dataObjects.INTs[dataObjects.INTkeys[cur_do]].name==intName) return dataObjects.INTs[dataObjects.INTkeys[cur_do]];
+	}
+	//console.log("Failed to find int named " + intName);
+	return undefined;
+}
+
 //Given the name of a system return it's object from dataobjects
 function ic_soa_data_getSystemFromName(systemName, dataObjects) {
 	for (var cur_do = 0; cur_do < dataObjects.SYSTEMkeys.length; cur_do++) {

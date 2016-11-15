@@ -161,7 +161,15 @@
 				} else if (QueryString.mode=="SYSTEM") {
 					displaySYSTEM("SYSTEM");
 				} else if (QueryString.mode=="INT") {
-					displayINT("INT");
+					if (typeof(QueryString.name)=="undefined") {
+						displayNOPARAM();
+					} else {
+						var intobj = ic_soa_data_getINTFromName(QueryString.name, dataObjects);
+						if (typeof(intobj)=="undefined") {
+						} else {
+							displayINT(intobj.uid);
+						};
+					};
 				} else {
 					displayNOPARAM();
 				};
