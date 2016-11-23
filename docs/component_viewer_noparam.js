@@ -49,7 +49,25 @@ function getNOPARAMHtml() {
 	}
 	ret += "</ul></td>";
 
-	ret += "</tr></table>";
+	for (var key in dataObjects.TAGs) {
+		ret += "<tr>";
+		ret += "<td colspan=5>";
+		ret += displayItemsWithTag(key);
+		ret += "</td>";
+		ret += "</tr>";
+	};
+	
+	ret += "</tr>";
+	ret += "</table>";
+	return ret;
+};
+function displayItemsWithTag(tag) {
+	var ret = "";
+	
+	ret += "<table border=\"1\">";
+	ret += "<tr><th>" + tag + "</th></tr>";
+	ret += "</table>";
+	
 	return ret;
 };
 function displayNOPARAM() {

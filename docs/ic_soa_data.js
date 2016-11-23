@@ -101,6 +101,27 @@ function ic_soa_data_loadSYSTEMSFromCommaList(commaListOfSystems, SYSTEMs, SYSTE
 	return return_array;
 };
 
+//Given an input string add all it's tags to the tags array
+// same function is also in the kanbancomponent.js
+function ic_soa_data_buildtaglist_tag(comma_seperated_tag_list, outputTagList) {
+	if (typeof(comma_seperated_tag_list)!="undefined") {
+		comma_seperated_tag_list=comma_seperated_tag_list.trim();
+		if (comma_seperated_tag_list.length>0) {
+			var tags = comma_seperated_tag_list.split(",");
+			for (var i=0;i<tags.length;i++) {
+				if (typeof(tags[i])!="undefined") {
+					var tag = tags[i].trim();
+					if (tag!="") {
+						if (typeof(outputTagList[tag])=="undefined") {
+							outputTagList[tag] = tag;
+						};
+					};
+				};
+			};
+		};
+	};
+};
+
 function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, numPre) {
 	//numPre - number of ranges in the result before the sheets
 	//   sheets must be at the end
@@ -119,6 +140,8 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 
 	var SYSTEMkeys = [];
 	var SYSTEMs = {};
+	
+	var TAGs = [];
 
 	//console.log(googleAPIResult);
 	//Can't rely on result to match it with Sheet
@@ -135,6 +158,7 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 		for (var i = 0; i < range.values.length; i++) {
 			var row = range.values[i];
 			var source_system = row[cur_sheet_metrics.source_sys_col];
+			ic_soa_data_buildtaglist_tag(row[cur_sheet_metrics.tagscol],TAGs);
 			EDFkeys.push(row[cur_sheet_metrics.uidcol]);
 			EDFs[row[cur_sheet_metrics.uidcol]] = {
 				uid: row[cur_sheet_metrics.uidcol],
@@ -165,6 +189,7 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 		for (var i = 0; i < range.values.length; i++) {
 			var row = range.values[i];
 			var target_system = row[cur_sheet_metrics.target_sys_col];
+			ic_soa_data_buildtaglist_tag(row[cur_sheet_metrics.tagscol],TAGs);
 			INTkeys.push(row[cur_sheet_metrics.uidcol]);
 			INTs[row[cur_sheet_metrics.uidcol]] = {
 				uid: row[cur_sheet_metrics.uidcol],
@@ -196,6 +221,7 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 		for (var cur_range = 0; cur_range < range.values.length; cur_range++) {
 			var row = range.values[cur_range];
 			var provider_system = row[cur_sheet_metrics.provider_sys_col];
+			ic_soa_data_buildtaglist_tag(row[cur_sheet_metrics.tagscol],TAGs);
 
 			//Load known clients
 			var known_clients = ic_soa_data_loadSYSTEMSFromCommaList(row[cur_sheet_metrics.known_client_col], SYSTEMs, SYSTEMkeys);
@@ -234,6 +260,7 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 
 			var provider_syss = ic_soa_data_loadSYSTEMSFromCommaList(row[cur_sheet_metrics.provider_sys_list_col], SYSTEMs, SYSTEMkeys);
 			var client_syss = ic_soa_data_loadSYSTEMSFromCommaList(row[cur_sheet_metrics.client_list_col], SYSTEMs, SYSTEMkeys);
+			ic_soa_data_buildtaglist_tag(row[cur_sheet_metrics.tagscol],TAGs);
 
 			POINTkeys.push(row[cur_sheet_metrics.uidcol]);
 			POINTs[row[cur_sheet_metrics.uidcol]] = {
@@ -264,7 +291,8 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 		PRESkeys: PRESkeys,
 		PRESs: PRESs,
 		POINTkeys: POINTkeys,
-		POINTs: POINTs 
+		POINTs: POINTs,
+		TAGs: TAGs
 	};
 };
 
