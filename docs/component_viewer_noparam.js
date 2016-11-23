@@ -49,25 +49,91 @@ function getNOPARAMHtml() {
 	}
 	ret += "</ul></td>";
 
+	ret += "<tr>";
+	ret += "<td colspan=5>";
+
+	ret += "<h1>Components grouped by TAG</h1><table class=\"kanbancomponent\"><tr>";
 	for (var key in dataObjects.TAGs) {
-		ret += "<tr>";
-		ret += "<td colspan=5>";
-		ret += displayItemsWithTag(key);
-		ret += "</td>";
-		ret += "</tr>";
+		ret += "<th>" + key + "</th>"; 
 	};
+	ret += "</tr><tr>";
+	var sm = ic_soa_data_getSheetMetrics();
+
+	for (var key in dataObjects.TAGs) {
+		ret += "<td valign=\"top\">";
+		ret += displayItemsWithTag(key,sm);
+		ret += "</td>";
+	};
+	ret += "</tr></table>";
+
+	ret += "</td>";
+	ret += "</tr>";
+
 	
 	ret += "</tr>";
 	ret += "</table>";
 	return ret;
 };
-function displayItemsWithTag(tag) {
+function displayItemsWithTag(tag,sm) {
 	var ret = "";
-	
-	ret += "<table border=\"1\">";
-	ret += "<tr><th>" + tag + "</th></tr>";
-	ret += "</table>";
-	
+console.log(sm["INT"].css_tag);
+console.log(sm["PRES"].css_tag);
+console.log(sm["POINT"].css_tag);
+	//Complete misuse of this funciton
+	for (cur_do = 0; cur_do < dataObjects.EDFkeys.length; cur_do++) {
+		var cur = dataObjects.EDFs[dataObjects.EDFkeys[cur_do]];
+		if (ic_soa_data_istaginlist(tag, cur.tags)) {
+			ret += knabancomponent_getcardHTML({
+				data_obj: {
+					$css: sm["EDF"].css_tag,
+					text: "<a href=\"javascript:displayEDF('" + cur.uid + "')\">" + cur.name + "</a>",
+					tags: cur.tags,
+				},
+				data_pos: -1,
+			},false);
+		};
+	}
+	for (var cur_do = 0; cur_do < dataObjects.INTkeys.length; cur_do++) {
+		var cur = dataObjects.INTs[dataObjects.INTkeys[cur_do]];
+		if (ic_soa_data_istaginlist(tag, cur.tags)) {
+			ret += knabancomponent_getcardHTML({
+				data_obj: {
+					$css: sm["INT"].css_tag,
+					text: "<a href=\"javascript:displayINT('" + cur.uid + "')\">" + cur.name + "</a>",
+					tags: cur.tags,
+				},
+				data_pos: -1,
+			},false);
+		};
+	}
+	for (var cur_do = 0; cur_do < dataObjects.PRESkeys.length; cur_do++) {
+		var cur = dataObjects.PRESs[dataObjects.PRESkeys[cur_do]];
+		if (ic_soa_data_istaginlist(tag, cur.tags)) {
+			ret += knabancomponent_getcardHTML({
+				data_obj: {
+					$css: sm["PRES"].css_tag,
+					text: "<a href=\"javascript:displayPRES('" + cur.uid + "')\">" + cur.name + "</a>",
+					tags: cur.tags,
+				},
+				data_pos: -1,
+			},false);
+		};
+	}
+	for (var cur_do = 0; cur_do < dataObjects.POINTkeys.length; cur_do++) {
+		var cur = dataObjects.POINTs[dataObjects.POINTkeys[cur_do]];
+		if (ic_soa_data_istaginlist(tag, cur.tags)) {
+			ret += knabancomponent_getcardHTML({
+				data_obj: {
+					$css: sm["POINT"].css_tag,
+					text: "<a href=\"javascript:displayPOINT('" + cur.uid + "')\">" + cur.name + "</a>",
+					tags: cur.tags,
+				},
+				data_pos: -1,
+			},false);
+		};
+	}
+
+
 	return ret;
 };
 function displayNOPARAM() {

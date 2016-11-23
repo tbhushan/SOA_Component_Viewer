@@ -121,6 +121,12 @@ function ic_soa_data_buildtaglist_tag(comma_seperated_tag_list, outputTagList) {
 		};
 	};
 };
+//Given a comma seperated list of tags return true if the passed tag is in the list
+function ic_soa_data_istaginlist(tag, comma_seperated_tag_list) {
+	var TAGlis = [];
+	ic_soa_data_buildtaglist_tag(comma_seperated_tag_list, TAGlis);
+	return typeof(TAGlis[tag])!="undefined";
+};
 
 function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, numPre) {
 	//numPre - number of ranges in the result before the sheets

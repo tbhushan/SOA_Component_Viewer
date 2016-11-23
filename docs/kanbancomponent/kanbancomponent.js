@@ -30,7 +30,7 @@ function kanbancomponent_appenddata(data_to_append) {
 	Array.prototype.push.apply(kanbancomponent_chart_obj.data,data_to_append);
 };
 
-function knabancomponent_getcardHTML_tagdivcontents(data_row_and_pos) {
+function knabancomponent_getcardHTML_tagdivcontents(data_row_and_pos, inc_edit_icon) {
 	if (kanbancomponent_chart_obj.readonly) {
 		if (typeof(data_row_and_pos.data_obj.tags)=="undefined") {
 			return "";
@@ -43,11 +43,15 @@ function knabancomponent_getcardHTML_tagdivcontents(data_row_and_pos) {
 		html += data_row_and_pos.data_obj.tags;
 	};
 
-	html += '<span class="ui-icon ui-icon-pencil" id="kanbancomponent_edittag"></span>';
+	if (inc_edit_icon) {
+		html += '<span class="ui-icon ui-icon-pencil" id="kanbancomponent_edittag"></span>';
+	};
 	return html;
 };
 
-function knabancomponent_getcardHTML(data_row_and_pos) {
+function knabancomponent_getcardHTML(data_row_and_pos,inc_edit_icon) {
+	if (typeof(inc_edit_icon)=="undefined") inc_edit_icon = true;
+
 	var html = "";
 	html += '<div class="card ' + data_row_and_pos.data_obj.$css + '" data-data_pos="' + data_row_and_pos.data_pos + '">';
 	html += data_row_and_pos.data_obj.text;
@@ -57,7 +61,7 @@ function knabancomponent_getcardHTML(data_row_and_pos) {
 	}
 
 	html += '<div class="tag">';
-	html += knabancomponent_getcardHTML_tagdivcontents(data_row_and_pos);
+	html += knabancomponent_getcardHTML_tagdivcontents(data_row_and_pos, inc_edit_icon);
 	html += '</div>';
 	
 	
