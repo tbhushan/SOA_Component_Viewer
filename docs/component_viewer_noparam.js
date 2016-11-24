@@ -76,9 +76,6 @@ function getNOPARAMHtml() {
 };
 function displayItemsWithTag(tag,sm) {
 	var ret = "";
-console.log(sm["INT"].css_tag);
-console.log(sm["PRES"].css_tag);
-console.log(sm["POINT"].css_tag);
 	//Complete misuse of this funciton
 	for (cur_do = 0; cur_do < dataObjects.EDFkeys.length; cur_do++) {
 		var cur = dataObjects.EDFs[dataObjects.EDFkeys[cur_do]];

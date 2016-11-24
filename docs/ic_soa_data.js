@@ -287,6 +287,28 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 		return;
 	}
 
+	SYSTEMkeys = SYSTEMkeys.sort();
+	EDFkeys = EDFkeys.sort(function (ak,bk) {
+		if (EDFs[ak].name==EDFs[bk].name) return 0;
+		if (EDFs[ak].name<EDFs[bk].name) return -1;
+		return 1;
+	});
+	INTkeys = INTkeys.sort(function (ak,bk) {
+		if (INTs[ak].name==INTs[bk].name) return 0;
+		if (INTs[ak].name<INTs[bk].name) return -1;
+		return 1;
+	});
+	PRESkeys = PRESkeys.sort(function (ak,bk) {
+		if (PRESs[ak].name==PRESs[bk].name) return 0;
+		if (PRESs[ak].name<PRESs[bk].name) return -1;
+		return 1;
+	});
+	POINTkeys = POINTkeys.sort(function (ak,bk) {
+		if (POINTs[ak].name==POINTs[bk].name) return 0;
+		if (POINTs[ak].name<POINTs[bk].name) return -1;
+		return 1;
+	});
+	
 	return {
 		EDFkeys: EDFkeys,
 		EDFs: EDFs,
