@@ -20,7 +20,7 @@ function ic_soa_data_getSheetMetrics() {
 	var ret = {};
 	
 	ret["EDF"] = {
-		datarange: 'EDFList!A2:F',
+		datarange: 'EDFList!A2:G',
 		sheet_name: 'EDFList',
 		css_tag: 'red',
 		indexcol: 1,
@@ -29,7 +29,8 @@ function ic_soa_data_getSheetMetrics() {
 		listcol: 3,
 		tagscol: 5,
 		uidcol: 0,
-		source_sys_col: 4
+		source_sys_col: 4,
+		ebocol: 6
 	};
 	ret["INT"] = {
 		datarange: 'Integration!A2:G',
@@ -174,6 +175,7 @@ function ic_soa_data_getDataObject(sheetList, sheetMetrics, googleAPIResult, num
 				sheet_row: (i+cur_sheet_metrics.toprow),
 				order: row[cur_sheet_metrics.indexcol],
 				source_system: source_system,
+				ebo: row[cur_sheet_metrics.ebocol],
 			}
 			if (typeof(SYSTEMs[source_system])=="undefined") {
 				SYSTEMkeys.push(source_system);

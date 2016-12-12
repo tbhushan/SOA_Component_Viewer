@@ -1,4 +1,7 @@
 "use strict";	
+
+var ebo_url_prefix = "https://svn.cc.ic.ac.uk/svn/projects/AIAMetaData/trunk/EBO_HTML_GEN/html/output/";
+
 function getEDFHtml(uid) {
 
 	var ret = "";
@@ -63,7 +66,12 @@ function getEDFHtml(uid) {
 	ret += '<tr><th>Development Status:</th><td>' + curEDF.status + '</td></tr>';
 	ret += '<tr><th>Source System:</th><td>' + curEDF.source_system + '</td></tr>';
 	ret += '<tr><th>Confluence Documentation:</th><td><a href="' + getConfluenceURL(curEDF) + '">Confluence</a></td></tr>';
-	ret += '<tr><th>Tags:</th><td>' + curEDF.tags + '</td></tr>';
+	ret += '<tr><th>Tags:</th><td>';
+	if (typeof(curEDF.tags)!="undefined") ret += curEDF.tags;
+	ret += '</td></tr>';
+	ret += '<tr><th>EBO:</th><td>';
+	if (typeof(curEDF.ebo)!="undefined")ret += '<a href="' + ebo_url_prefix + curEDF.ebo + '">' + curEDF.ebo.replace(new RegExp('/','g'),'<br>') + '</a>';
+	ret += '</td></tr>';
 	ret += '</table>';
 	
 
