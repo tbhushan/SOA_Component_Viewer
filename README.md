@@ -10,12 +10,13 @@ SOA Component Viewer users should have access to this google sheet document. If 
 
 ##Component Types
 
-|Short Name|Full Name|
-|-------|-------|
-|EDF|Enteprise Data Flow|
-|Integration|Integration|
-|Presentation|Presentation Service|
-|Point2Point|Point to Point Integration|
+|Short Name|Full Name|Description|
+|-------|-------|-----|
+|EDF|Enteprise Data Flow|Takes data from a source of truth and transforms it into a canonical model before putting it into an enterprise queue for consumption by integrations.|
+|Integration|Integration|Takes data from an enterprise queue and transforms it into API calls required by a specified target system|
+|Presentation|Presentation Service|A Synch service which allows a system to query data from a source of truth|
+|Point2Point|Point to Point Integration|A direct integration between two systems.|
+
 
 
 ## Confluence Link
