@@ -1,13 +1,20 @@
 <html>
 <head>
 <title>SOA Component Viewer</title>
+  
+<!-- js files for getting IC SOA data from sheet -->
+<script src="ic_soa_data.js" type="text/javascript"></script>
 </head>
 <body>
 <h1>Internal menu</h1>
 <ul>
 <li><a href="component_viewer.html">Component Viewer</a></li>
 <li><a href="svg_test.html">SVG Test Demo</a> - Draws each object once to enable testing of svg creation code</li>
-<li><a href="https://docs.google.com/spreadsheets/d/1u_DNhV7NO16uHZSP1KeYfAorW9tvwD9gbbYsCRp07G8/">Data</a> - Google Docs sheet with source data</li>
+<script>
+ document.write("<li><a href=\"https://docs.google.com/spreadsheets/d/");
+ document.write(ic_soa_data_getSheetID());
+ document.write("/\">Data</a> - Google Docs sheet with source data (autolink)</li>");
+</script>
 </ul>
 </body>
 </html>

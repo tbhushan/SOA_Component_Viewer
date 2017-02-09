@@ -51,7 +51,13 @@ To do this:
 Navigate to (https://console.developers.google.com/apis/credentials)
 Create a Project called "SOA Component Viewer"
 Create OAuth Client ID credentials called "SOA Component Viewer"
-Under "Authorised JavaScript origins" add:
+At this point it will stop you and make you fill in "product name on consent screen"
+Enter "SOA Component Viewer" as the name and Press Save
+
+Create a new OAuth CLient ID credential
+Application Type: Web application
+Name: SOA Component Viewer
+Authorized Javascript Origins: 
 * http://localhost:8000
 * https://rmetcalf9.github.io
 
@@ -59,8 +65,19 @@ Replace rmetcalf9 with your own github user.
 
 Note down the client ID.
 
+Click Dashboard
+Press Enable API
+Under Google Apps APIs select Sheets API
+Press Enable
+
 In your repo edit (docs/board.js) and enter in the client ID.
 Save and commit your changes.
+
+These settings may take some time to take effect.
+
+Update README.md to point to correct site
+-
+Edit the README.md file in github and change the URL for github live pages to point to your site. (Add your git account ID rather than rjmetcal)
 
 Test the System
 -
