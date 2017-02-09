@@ -23,7 +23,15 @@ You will need a github account for the following steps. Log into your github acc
 
 Update the Forked Document references to point to new Google Sheets Spreadsheet
 -
-TODO
+The forked github repo must be changed to point to the newly created google sheets documented. To do this find the file:
+(docs/ic_soa_data.js) in your repo.
+It can be edited in the github ui. Edit it and change the following function:
+```javascript
+function ic_soa_data_getSheetID() {
+	return '1u_DNhV7NO16uHZSP1KeYfAorW9tvwD9gbbYsCRp07G8';
+};
+```
+so that it returns the sheet ID obtained previously.
 
 Note down the URL for your forked copy
 -
