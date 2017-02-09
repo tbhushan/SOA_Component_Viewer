@@ -19,7 +19,7 @@ The document ID is the long string inbetween /d and /edit, in this case 1K28dX1g
 
 Fork the git repo
 -
-TODO
+You will need a github account for the following steps. Log into your github accounts and navigate to this project (https://github.com/rmetcalf9/SOA_Component_Viewer). In the top right corner click the "Fork" button. This will create a copy of the entire repo (including document pages) which you will be able to edit.
 
 Update the Forked Document references to point to new Google Sheets Spreadsheet
 -
