@@ -23,15 +23,45 @@ You will need a github account for the following steps. Log into your github acc
 
 Update the Forked Document references to point to new Google Sheets Spreadsheet
 -
-TODO
+The forked github repo must be changed to point to the newly created google sheets documented. To do this find the file:
+(docs/ic_soa_data.js) in your repo.
+It can be edited in the github ui. Edit it and change the following function:
+```javascript
+function ic_soa_data_getSheetID() {
+	return '1u_DNhV7NO16uHZSP1KeYfAorW9tvwD9gbbYsCRp07G8';
+};
+```
+so that it returns the sheet ID obtained previously.
+Remember to commit the change to the repo with an apropiate comment.
 
 Note down the URL for your forked copy
 -
-TODO
-
-. It will have the following format:
+Each github repo will have a special documents area with it's own URL. As this repo has been forked a new area has been created and this is what should be used to access the SOA_Component_Viewer. 
+The URL will have the following format:
+```
 https://<<GIT USER>>.github.io/<<PROJECT NAME>>/component_viewer.html
+```
+Test this link and make sure you can access the pages. (Although you will get an error)
 
 Configure Google API's to allow access to new site
 -
-TODO
+Google API's have Cross Site Scripting (XSS) protection. This means that API calls are only accepted when viewing a site from a known URL. It is nessecary to setup an application in Google API Manager and explicitly allot the URL gained in the previous step.
+
+To do this:
+Navigate to (https://console.developers.google.com/apis/credentials)
+Create a Project called "SOA Component Viewer"
+Create OAuth Client ID credentials called "SOA Component Viewer"
+Under "Authorised JavaScript origins" add:
+* http://localhost:8000
+* https://rmetcalf9.github.io
+
+Replace rmetcalf9 with your own github user.
+
+Note down the client ID.
+
+In your repo edit (docs/board.js) and enter in the client ID.
+Save and commit your changes.
+
+Test the System
+-
+Log in to the URL and ensure that the components all appear. Test a edit user is able to move items around the Kanban board.
