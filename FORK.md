@@ -21,7 +21,7 @@ Fork the git repo
 -
 TODO
 
-Fork update the Document references to point to new Google Sheets Spreadsheet
+Update the Forked Document references to point to new Google Sheets Spreadsheet
 -
 TODO
 
