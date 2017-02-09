@@ -26,3 +26,6 @@ Individual component pages link to confluence pages for convenience. This is bas
 ## EBO Documentation Link
 
 Individual EDF’s may link to their EBO location if it is specified in the EDF data. The URL is determined by the variable ebo_url_prefix (declared in docs/component_viewer_edf.js). This is concatenated with the EBO location data.
+
+## Creating independent copy
+For instructions on how to create your own working version of the SOA_Component_Viewer follow these [How to](FORK.md) instructions.
