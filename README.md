@@ -1,7 +1,7 @@
 # SOA_Component_Viewer
 Website to view SOA Components and their relationships
 
-[Live github pages](http://rmetcalf9.github.io/SOA_Component_Viewer)
+[Live github pages](http://tbhushan.github.io/SOA_Component_Viewer)
 
 ## Summary of Operation
 SOA Component Viewer is a JavaScript based web-application that uses the google API to generate webpages to view details of SOA Components.
