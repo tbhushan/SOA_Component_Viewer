@@ -3,7 +3,7 @@
 //https://developers.google.com/api-client-library/javascript/reference/referencedocs
 
 
-var board_CLIENT_ID = '1079972761471-j4b2l90p0rpkrkplf1j6avkue436c74p.apps.googleusercontent.com';
+var board_CLIENT_ID = '652477791248-l46dejlge9ifm8qmpksk0bh233fpkf2j.apps.googleusercontent.com';
 
 var board_SCOPES = ["https://www.googleapis.com/auth/spreadsheets"];
 
