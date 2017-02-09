@@ -52,8 +52,8 @@ Navigate to (https://console.developers.google.com/apis/credentials)
 Create a Project called "SOA Component Viewer"
 Create OAuth Client ID credentials called "SOA Component Viewer"
 Under "Authorised JavaScript origins" add:
-http://localhost:8000
-https://rmetcalf9.github.io
+* http://localhost:8000
+* https://rmetcalf9.github.io
 
 Replace rmetcalf9 with your own github user.
 
